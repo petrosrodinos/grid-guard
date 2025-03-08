@@ -1,0 +1,7 @@
+{
+  "name": "GridGuard",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
