@@ -47,7 +47,11 @@ export const useLocation = () => {
 
     }
 
+    const getLocationNotifications = async () => {
+        return [];
+    }
+
     return {
-        addLocation, error, data, setData, setError
+        addLocation, error, data, setData, setError, getLocationNotifications
     }
 }

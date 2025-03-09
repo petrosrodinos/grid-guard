@@ -10,6 +10,8 @@ import {
   IonItem,
   IonLabel,
   IonModal,
+  IonSelect,
+  IonSelectOption,
   IonTitle,
   IonToolbar,
   useIonToast,
@@ -17,6 +19,7 @@ import {
 import { FC, useState } from "react";
 import "./style.css";
 import { useLocation } from "../../../hooks/location";
+import { prefectures } from "../../../constants/locations";
 
 interface AddLocationProps {
   isOpen: boolean;
@@ -70,13 +73,13 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
           </IonCardContent>
         </IonCard>
         <IonItem className="input-item">
-          <IonLabel position="stacked">Prefecture</IonLabel>
-          <IonInput
-            value={prefecture}
-            onIonChange={(e) => setPrefecture(e.detail.value!)}
-            placeholder="Enter Prefecture"
-            required
-          />
+          <IonSelect label="Select Prefecture" placeholder="Prefectures">
+            {prefectures.map((prefecture: any) => (
+              <IonSelectOption key={prefecture.id} value={prefecture.id}>
+                {prefecture.value}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
         </IonItem>
 
         <IonItem className="input-item">

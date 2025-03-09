@@ -14,9 +14,11 @@ import "./style.css";
 import Header from "../../components/Header";
 import { useState } from "react";
 import AddLocation from "./AddLocation";
+import { useLocation } from "../../hooks/location";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { getLocationNotifications, error, setError } = useLocation();
 
   const handleAddLocation = () => {
     setIsOpen(true);
