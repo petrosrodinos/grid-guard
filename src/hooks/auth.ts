@@ -17,6 +17,11 @@ export const useAuth = () => {
                 phone: `+30${phone}`,
                 password: password,
                 options: {
+                    data: {
+                        fulll_name: fullName,
+                        email: "",
+                        phone: `+30${phone}`,
+                    },
                     channel: "sms",
                 },
             });
@@ -35,6 +40,35 @@ export const useAuth = () => {
                     email: "",
                     phone: `+30${phone}`,
                 });
+                setData(data)
+                return data
+            }
+        } catch (error: any) {
+            setError(error.message)
+        }
+        finally {
+            dismiss()
+        }
+    };
+
+    const loginUser = async ({ phone, password }: any) => {
+        try {
+            present({
+                message: "Logging In",
+            })
+            const { data, error } = await supabase.auth.signInWithPassword({
+                phone: `+30${phone}`,
+                password: password,
+            })
+
+            console.log(data, error);
+
+            if (error) {
+                setError(error.message);
+                return;
+            }
+
+            if (data) {
                 setData(data)
                 return data
             }
@@ -102,5 +136,5 @@ export const useAuth = () => {
         }
     }
 
-    return { registerUser, error, loading, data, setError, verifyOtp, resendOtp };
+    return { registerUser, loginUser, error, loading, data, setError, verifyOtp, resendOtp };
 }

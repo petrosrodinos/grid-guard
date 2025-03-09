@@ -30,7 +30,8 @@ const Register = () => {
     }
     const data = await registerUser({ phone, password, fullName });
     if (data) {
-      history.push("/validate-phone?phone=" + phone);
+      // history.push("/validate-phone?phone=" + phone);
+      history.replace("/");
     }
   };
 
@@ -38,12 +39,12 @@ const Register = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Register</IonTitle>
+          <IonTitle>Sign Up</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
         <div className="register-container">
-          <h2>Sign Up</h2>
+          <h2>Register</h2>
           <p>Create an account to continue</p>
 
           <IonItem className="input-item">
@@ -76,11 +77,7 @@ const Register = () => {
             />
           </IonItem>
 
-          <IonText className="forgot-password" onClick={() => history.push("/forgot-password")}>
-            Forgot Password?
-          </IonText>
-
-          <IonButton expand="full" onClick={handleRegister} className="register-button">
+          <IonButton expand="block" onClick={handleRegister} className="register-button">
             Register
           </IonButton>
 
