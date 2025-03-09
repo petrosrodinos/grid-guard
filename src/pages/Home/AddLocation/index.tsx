@@ -1,4 +1,5 @@
 import {
+  IonAlert,
   IonButton,
   IonButtons,
   IonCard,
@@ -8,13 +9,14 @@ import {
   IonInput,
   IonItem,
   IonLabel,
-  IonList,
   IonModal,
   IonTitle,
   IonToolbar,
+  useIonToast,
 } from "@ionic/react";
 import { FC, useState } from "react";
 import "./style.css";
+import { useLocation } from "../../../hooks/location";
 
 interface AddLocationProps {
   isOpen: boolean;
@@ -25,13 +27,27 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
   const [prefecture, setPrefecture] = useState("");
   const [municipality, setMunicipality] = useState("");
   const [address, setAddress] = useState("");
+  const { addLocation, error, setError } = useLocation();
+  const [present] = useIonToast();
 
-  const handleAddLocation = () => {
+  const handleAddLocation = async () => {
     if (!prefecture || !municipality || !address) {
-      alert("Please fill all the fields");
+      setError("Please fill all the fields.");
       return;
     }
-    alert("Location added successfully!");
+    const data = await addLocation({
+      prefecture,
+      municipality,
+      address,
+    });
+    if (data) {
+      present({
+        message: "Location added successfully",
+        duration: 1500,
+        position: "top",
+        cssClass: "toast-success",
+      });
+    }
   };
 
   return (
@@ -92,13 +108,13 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
           Add Location
         </IonButton>
       </IonContent>
-      {/* <IonAlert
-                isOpen={!!error}
-                header="Error"
-                message={error || ""}
-                buttons={["OK"]}
-                onDidDismiss={() => setError(null)}
-              ></IonAlert> */}
+      <IonAlert
+        isOpen={!!error}
+        header="Error"
+        message={error || ""}
+        buttons={["OK"]}
+        onDidDismiss={() => setError(null)}
+      ></IonAlert>
     </IonModal>
   );
 };
