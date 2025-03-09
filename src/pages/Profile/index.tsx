@@ -1,8 +1,7 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Tab3.css';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import "./style.css";
 
-const Tab3: React.FC = () => {
+const Profile: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
@@ -16,10 +15,16 @@ const Tab3: React.FC = () => {
             <IonTitle size="large">Tab 3</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Tab 3 page" />
+        <h1>profile name</h1>
+        <h1>profile email</h1>
+        <h1>profile phone number</h1>
+        <h1>addresses</h1>
+        <h1>language</h1>
+        <h1>notifications</h1>
+        <h1>dark mode</h1>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Tab3;
+export default Profile;

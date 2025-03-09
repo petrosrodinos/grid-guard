@@ -1,0 +1,47 @@
+.register-container {
+  max-width: 400px;
+  margin: auto;
+}
+
+.register-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.register-container p {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.input-item {
+  border-radius: 10px;
+  margin-bottom: 15px;
+  /* padding: 5px; */
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  margin: 10px 0;
+  color: #3880ff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.register-button {
+  margin-top: 15px;
+  font-size: 18px;
+  border-radius: 8px !important;
+}
+
+.login-link {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.login-link span {
+  color: #3880ff;
+  font-weight: bold;
+  cursor: pointer;
+}
