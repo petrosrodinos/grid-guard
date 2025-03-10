@@ -41,6 +41,7 @@ export const useAuth = () => {
                     phone: `+30${phone}`,
                 });
                 setData(data)
+                localStorage.setItem("userId", JSON.stringify(data.user?.id))
                 return data
             }
         } catch (error: any) {
@@ -61,8 +62,6 @@ export const useAuth = () => {
                 password: password,
             })
 
-            console.log(data, error);
-
             if (error) {
                 setError(error.message);
                 return;
@@ -70,6 +69,7 @@ export const useAuth = () => {
 
             if (data) {
                 setData(data)
+                localStorage.setItem("userId", JSON.stringify(data.user?.id))
                 return data
             }
         } catch (error: any) {
@@ -80,28 +80,7 @@ export const useAuth = () => {
         }
     };
 
-    const getUser = async () => {
-        try {
 
-            const { error, data: { user } } = await supabase.auth.getUser()
-
-
-            if (error) {
-                setError(error.message);
-                return;
-            }
-
-            if (user) {
-                return user
-            }
-
-            return null;
-        } catch (error: any) {
-            setError(error.message)
-        }
-        finally {
-        }
-    };
 
     const verifyOtp = async ({ phone, otp }: any) => {
         try {
@@ -159,5 +138,8 @@ export const useAuth = () => {
         }
     }
 
-    return { registerUser, loginUser, error, loading, data, setError, getUser, verifyOtp, resendOtp };
+
+
+
+    return { registerUser, loginUser, error, loading, data, setError, verifyOtp, resendOtp };
 }

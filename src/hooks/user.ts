@@ -1,0 +1,83 @@
+import { useState } from "react";
+import supabase from "../utils/supabase";
+import { useIonLoading } from "@ionic/react";
+
+export const useUser = () => {
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [data, setData] = useState<any>(null);
+    const [present, dismiss] = useIonLoading();
+
+    const getUser = async () => {
+        try {
+
+            const { error, data: { user } } = await supabase.auth.getUser()
+
+
+            if (error) {
+                setError(error.message);
+                return;
+            }
+
+            if (user) {
+                return user
+            }
+
+            return null;
+        } catch (error: any) {
+            setError(error.message)
+        }
+        finally {
+        }
+    };
+
+    const getUserData = async () => {
+        try {
+
+            // const { data: userData, error: userError } = await supabase.auth.getUser();
+            // if (userError) {
+            //     setError(userError.message);
+            //     return;
+            // }
+            const userId = JSON.parse(localStorage.getItem("userId") || "{}");
+            const { data, error } = await supabase.from("users").select("*").eq("user_id", userId).single()
+            if (error) {
+                setError(error.message)
+                return
+            }
+            if (data) {
+                setData(data)
+                return data
+            }
+        } catch (error: any) {
+            setError(error.message)
+
+        }
+        finally {
+            dismiss()
+        }
+    }
+
+    const updateUser = async (data: any) => {
+        try {
+            present({
+                message: "Updating",
+            })
+            const { error } = await supabase.from("users").upsert(data)
+            if (error) {
+                setError(error.message)
+                return
+            }
+        } catch (error: any) {
+            setError(error.message)
+
+        }
+        finally {
+            dismiss()
+        }
+    }
+
+
+
+    return { error, loading, data, getUserData, setError, getUser, updateUser };
+}

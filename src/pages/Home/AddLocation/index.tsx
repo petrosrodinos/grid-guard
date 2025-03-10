@@ -57,8 +57,7 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
   const handlePrefectureChange = (e: any) => {
     const id = e.detail.value.toString();
     setPrefecture(id);
-    const values =
-      municipalities.find((prefecture: any) => prefecture.id == id)?.municipalities || [];
+    const values = municipalities.find((value: any) => value.id == id)?.municipalities || [];
     setMunicipalities(values);
   };
 

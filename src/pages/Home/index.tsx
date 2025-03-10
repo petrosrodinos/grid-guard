@@ -5,7 +5,7 @@ import { useState } from "react";
 import AddLocation from "./AddLocation";
 import { useLocation } from "../../hooks/location";
 import { useTranslation } from "react-i18next";
-import LocationCard from "../../components/LocationCard";
+import LocationOutageCard from "../../components/LocationOutageCard";
 import "./style.css";
 
 const Home: React.FC = () => {
@@ -48,7 +48,7 @@ const Home: React.FC = () => {
             </IonCard>
           ) : (
             locations.map((location: any, index: number) => (
-              <LocationCard key={index} location={location} />
+              <LocationOutageCard key={index} location={location} />
             ))
           )}
         </div>

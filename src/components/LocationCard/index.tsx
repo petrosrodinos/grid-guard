@@ -1,91 +1,109 @@
+import React, { useEffect, useState } from "react";
 import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardSubtitle,
   IonCardContent,
-  IonList,
-  IonItem,
+  IonButton,
   IonIcon,
+  IonItem,
+  IonSelect,
+  IonSelectOption,
+  IonInput,
   IonLabel,
 } from "@ionic/react";
-import { timeOutline, locationOutline, alertCircleOutline } from "ionicons/icons";
-import { FC } from "react";
-import "./style.css";
-import { Location } from "../../interfaces/location";
+import { pencilOutline, trashOutline } from "ionicons/icons";
+import { municipalities, prefectures } from "../../constants/locations";
 
 interface LocationCardProps {
-  location: Location;
+  location: any;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-const outageData = [
-  {
-    from: "2025-03-11 10:00",
-    to: "2025-03-11 14:00",
-    area: "Main Street & 5th Ave",
-    reason: "Scheduled maintenance",
-  },
-  {
-    from: "2025-03-12 08:00",
-    to: "2025-03-12 12:00",
-    area: "Downtown District",
-    reason: "Emergency repair",
-  },
-];
+const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete }) => {
+  const { id, address, municipality, prefecture } = location;
+  const [prefectureValue, setPrefectureValue] = useState(prefecture);
+  const [municipalityValue, setMunicipalityValue] = useState<any>();
+  const [selectedMunicipalities, setMunicipalities] = useState<any[]>([]);
+  const [addressValue, setAddressValue] = useState(address);
 
-const LocationCard: FC<LocationCardProps> = ({ location }) => {
-  const { prefecture, municipality, address } = location;
+  useEffect(() => {
+    const values =
+      municipalities.find((value: any) => value.id == prefecture)?.municipalities || [];
+    setMunicipalities(values);
+    setMunicipalityValue(municipality);
+  }, [location]);
+
+  const handlePrefectureChange = (e: any) => {
+    const id = e.detail.value.toString();
+    setPrefectureValue(id);
+    const values =
+      municipalities.find((prefecture: any) => prefecture.id == id)?.municipalities || [];
+    setMunicipalities(values);
+  };
+
+  const handleMunicipalityChange = (e: any) => {
+    setMunicipalityValue(e.detail.value);
+  };
+
   return (
-    <div>
-      <IonCard className="location-card">
-        <IonCardHeader>
-          <IonCardTitle>{address}</IonCardTitle>
-          <IonCardSubtitle className="small-grey-text">
-            {prefecture} - {municipality}
-          </IonCardSubtitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonList>
-            {outageData.map((outage, idx) => (
-              <IonCard key={idx} className="outage-card">
-                <IonCardHeader>
-                  <IonCardTitle>Outage Information</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  <IonItem>
-                    <IonIcon icon={timeOutline} slot="start" />
-                    <IonLabel>
-                      <strong>From:</strong> {outage.from}
-                    </IonLabel>
-                  </IonItem>
+    <IonCard>
+      <IonCardHeader>
+        <IonCardTitle>{address}</IonCardTitle>
+      </IonCardHeader>
 
-                  <IonItem>
-                    <IonIcon icon={timeOutline} slot="start" />
-                    <IonLabel>
-                      <strong>To:</strong> {outage.to}
-                    </IonLabel>
-                  </IonItem>
-
-                  <IonItem>
-                    <IonIcon icon={locationOutline} slot="start" />
-                    <IonLabel>
-                      <strong>Area:</strong> {outage.area}
-                    </IonLabel>
-                  </IonItem>
-
-                  <IonItem>
-                    <IonIcon icon={alertCircleOutline} slot="start" />
-                    <IonLabel>
-                      <strong>Reason:</strong> {outage.reason}
-                    </IonLabel>
-                  </IonItem>
-                </IonCardContent>
-              </IonCard>
+      <IonCardContent>
+        <IonItem className="input-item">
+          <IonSelect
+            onIonChange={handlePrefectureChange}
+            label="Select Prefecture"
+            placeholder="Prefectures"
+            value={prefectureValue}
+          >
+            {prefectures.map((prefecture: any) => (
+              <IonSelectOption key={prefecture.id} value={prefecture.id}>
+                {prefecture.value}
+              </IonSelectOption>
             ))}
-          </IonList>
-        </IonCardContent>
-      </IonCard>
-    </div>
+          </IonSelect>
+        </IonItem>
+
+        <IonItem className="input-item">
+          <IonSelect
+            onIonChange={handleMunicipalityChange}
+            label="Select Municipality"
+            placeholder="Municipality"
+            value={municipalityValue}
+          >
+            {selectedMunicipalities.map((municipality: any) => (
+              <IonSelectOption key={municipality.id} value={municipality.id}>
+                {municipality.value}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+
+        <IonItem className="input-item">
+          <IonLabel position="stacked">Address</IonLabel>
+          <IonInput
+            value={addressValue}
+            onIonChange={(e) => setAddressValue(e.detail.value!)}
+            placeholder="Enter Address"
+            required
+          />
+        </IonItem>
+
+        <IonButton color="primary" onClick={() => onEdit(id)}>
+          <IonIcon icon={pencilOutline} slot="start" />
+          Edit
+        </IonButton>
+        <IonButton color="danger" onClick={() => onDelete(id)}>
+          <IonIcon icon={trashOutline} slot="start" />
+          Delete
+        </IonButton>
+      </IonCardContent>
+    </IonCard>
   );
 };
 

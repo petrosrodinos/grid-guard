@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
 import supabase from "../utils/supabase"
 import { useIonLoading } from "@ionic/react"
-import { useAuth } from "./auth"
+import { useUser } from "./user"
 
 export const useLocation = () => {
-    const { getUser } = useAuth()
+    const { getUser } = useUser()
     const [error, setError] = useState<string | null>(null)
     const [data, setData] = useState<any>([])
     const [present, dismiss] = useIonLoading();
 
     useEffect(() => {
         try {
-            getLocations()
+            getLocationsWithOutages()
         } catch (error: any) {
             setError(error.message)
         }
@@ -55,7 +55,7 @@ export const useLocation = () => {
 
     }
 
-    const getLocations = async () => {
+    const getLocationsWithOutages = async () => {
         setData(
             [
                 {
@@ -100,7 +100,70 @@ export const useLocation = () => {
         );
     }
 
+    const getLocations = async () => {
+        try {
+            const userId = JSON.parse(localStorage.getItem("userId") || "{}");
+
+            const { data, error } = await supabase
+                .from('locations')
+                .select('*')
+                .eq('user_id', userId);
+
+            if (error) {
+                setError(error.message);
+                return null;
+            }
+
+            setData(data);
+            return data;
+
+        } catch (error: any) {
+            setError(error.message)
+            return null;
+        }
+    }
+
+    const updateLocation = async (data: any) => {
+        try {
+            present({
+                message: "Updating",
+            })
+            const { error } = await supabase.from("locations").upsert(data)
+            if (error) {
+                setError(error.message)
+                return
+            }
+        } catch (error: any) {
+            setError(error.message)
+
+        }
+        finally {
+            dismiss()
+        }
+    }
+
+    const deleteLocation = async (id: string) => {
+        try {
+            present({
+                message: "Deleting",
+            })
+            const { error } = await supabase.from("locations").delete().eq("id", id)
+            if (error) {
+                setError(error.message)
+                return
+            }
+            return true
+        } catch (error: any) {
+            setError(error.message)
+
+        }
+        finally {
+            dismiss()
+        }
+    }
+
+
     return {
-        addLocation, error, data, setData, setError, getLocations
+        addLocation, error, data, setData, setError, getLocationsWithOutages, updateLocation, getLocations, deleteLocation
     }
 }
