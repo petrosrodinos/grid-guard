@@ -1,14 +1,11 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { IonContent, IonPage } from "@ionic/react";
 import { FC } from "react";
+import Header from "../../../components/Header";
 
 const Phone: FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Phone</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title="Phone" />
       <IonContent>
         <h1>Phone</h1>
       </IonContent>

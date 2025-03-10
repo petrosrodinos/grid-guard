@@ -30,6 +30,7 @@ import { useTranslation } from "react-i18next";
 import { useColorMode } from "../../hooks/colorMode";
 import { useIonRouter } from "@ionic/react";
 import "./style.css";
+import Header from "../../components/Header";
 
 const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -53,11 +54,7 @@ const Profile: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Settings</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title="Profile" />
       <IonContent fullscreen>
         <IonList style={{ maxWidth: "500px", margin: "0 auto" }}>
           <IonItem button onClick={() => history.push("/profile/details")}>

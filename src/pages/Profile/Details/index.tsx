@@ -1,14 +1,11 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { IonContent, IonPage } from "@ionic/react";
 import { FC } from "react";
+import Header from "../../../components/Header";
 
 const Details: FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Details</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title="Details" />
       <IonContent>
         <h1>details</h1>
       </IonContent>
