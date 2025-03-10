@@ -1,7 +1,5 @@
 .notifications-section {
-  padding: 20px;
-  /* text-align: center; */
-  max-width: 500px;
+  padding: 5px;
   margin: 0 auto;
   width: 100%;
 }
@@ -17,5 +15,5 @@ h2 {
 }
 
 .add-location-button {
-  margin-top: 20px;
+  margin-top: 10px;
 }

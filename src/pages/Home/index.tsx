@@ -1,25 +1,16 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonIcon,
-} from "@ionic/react";
+import { IonContent, IonPage, IonButton, IonCard, IonCardContent, IonIcon } from "@ionic/react";
 import { locationOutline } from "ionicons/icons";
-import "./style.css";
 import Header from "../../components/Header";
 import { useState } from "react";
 import AddLocation from "./AddLocation";
 import { useLocation } from "../../hooks/location";
 import { useTranslation } from "react-i18next";
+import LocationCard from "../../components/LocationCard";
+import "./style.css";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { getLocationNotifications, error, setError } = useLocation();
+  const { data: locations, error, setError } = useLocation();
   const { t } = useTranslation();
 
   const handleAddLocation = () => {
@@ -28,26 +19,13 @@ const Home: React.FC = () => {
 
   return (
     <IonPage>
-      <Header title="Home" />
-
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Home</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <Header title="Home">
+          <IonIcon icon={locationOutline} onClick={handleAddLocation} />
+        </Header>
 
         <div className="notifications-section">
-          <h2>{t("notifications")}</h2>
-
-          <IonCard className="info-card">
-            <IonCardContent>
-              <p>
-                There are no added locations to keep track. Please add now by pressing the button
-                below.
-              </p>
-            </IonCardContent>
-          </IonCard>
+          <h2 style={{ textAlign: "left", marginLeft: "10px" }}>{t("notifications")}</h2>
 
           <IonButton
             onClick={handleAddLocation}
@@ -58,7 +36,23 @@ const Home: React.FC = () => {
             <IonIcon slot="start" icon={locationOutline} />
             Add Location
           </IonButton>
+
+          {locations.length === 0 ? (
+            <IonCard className="info-card">
+              <IonCardContent>
+                <p>
+                  There are no added locations to keep track. Please add now by pressing the button
+                  below.
+                </p>
+              </IonCardContent>
+            </IonCard>
+          ) : (
+            locations.map((location: any, index: number) => (
+              <LocationCard key={index} location={location} />
+            ))
+          )}
         </div>
+
         <AddLocation isOpen={isOpen} setIsOpen={setIsOpen} />
       </IonContent>
     </IonPage>
