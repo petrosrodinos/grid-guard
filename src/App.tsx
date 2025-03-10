@@ -48,6 +48,10 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ValidatePhone from "./pages/ValidatePhone";
+import Details from "./pages/Profile/Details";
+import Phone from "./pages/Profile/Phone";
+import Password from "./pages/Profile/Password";
+import Notifications from "./pages/Profile/Notifications";
 
 setupIonicReact();
 
@@ -67,6 +71,18 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/home">
             <Home />
+          </Route>
+          <Route exact path="/profile/details">
+            <Details />
+          </Route>
+          <Route exact path="/profile/phone">
+            <Phone />
+          </Route>
+          <Route exact path="/profile/password">
+            <Password />
+          </Route>
+          <Route exact path="/profile/notifications">
+            <Notifications />
           </Route>
           <Route exact path="/tab2">
             <Tab2 />

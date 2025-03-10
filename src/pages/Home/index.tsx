@@ -15,10 +15,12 @@ import Header from "../../components/Header";
 import { useState } from "react";
 import AddLocation from "./AddLocation";
 import { useLocation } from "../../hooks/location";
+import { useTranslation } from "react-i18next";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { getLocationNotifications, error, setError } = useLocation();
+  const { t } = useTranslation();
 
   const handleAddLocation = () => {
     setIsOpen(true);
@@ -36,7 +38,7 @@ const Home: React.FC = () => {
         </IonHeader>
 
         <div className="notifications-section">
-          <h2>Notifications</h2>
+          <h2>{t("notifications")}</h2>
 
           <IonCard className="info-card">
             <IonCardContent>
