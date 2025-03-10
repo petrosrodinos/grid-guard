@@ -1,5 +1,5 @@
 import puppeteer from "https://deno.land/x/puppeteer@16.2.0/mod.ts";
-
+import { writeFileSync } from "node:fs";
 const url = "https://siteapps.deddie.gr/outages2public";
 
 const getMunicipalityOptions = async () => {
@@ -57,7 +57,9 @@ const getMunicipalityOptions = async () => {
     return results;
 };
 
-// Call the function and log results
 getMunicipalityOptions()
-    .then(data => console.log("Municipality Data:", JSON.stringify(data, null, 2)))
+    .then(data => {
+        writeFileSync("municipalities.json", JSON.stringify(data, null, 2));
+        console.log("Data saved to municipalities.json");
+    })
     .catch(console.error);

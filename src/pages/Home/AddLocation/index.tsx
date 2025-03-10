@@ -17,9 +17,9 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { FC, useState } from "react";
-import "./style.css";
 import { useLocation } from "../../../hooks/location";
-import { prefectures } from "../../../constants/locations";
+import { municipalities, prefectures } from "../../../constants/locations";
+import "./style.css";
 
 interface AddLocationProps {
   isOpen: boolean;
@@ -30,6 +30,7 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
   const [prefecture, setPrefecture] = useState("");
   const [municipality, setMunicipality] = useState("");
   const [address, setAddress] = useState("");
+  const [selectedMunicipalities, setMunicipalities] = useState<any[]>([]);
   const { addLocation, error, setError } = useLocation();
   const [present] = useIonToast();
 
@@ -53,6 +54,18 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
     }
   };
 
+  const handlePrefectureChange = (e: any) => {
+    const id = e.detail.value.toString();
+    setPrefecture(id);
+    const values =
+      municipalities.find((prefecture: any) => prefecture.id == id)?.municipalities || [];
+    setMunicipalities(values);
+  };
+
+  const handleMunicipalityChange = (e: any) => {
+    setMunicipality(e.detail.value);
+  };
+
   return (
     <IonModal isOpen={isOpen}>
       <IonHeader>
@@ -73,7 +86,11 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
           </IonCardContent>
         </IonCard>
         <IonItem className="input-item">
-          <IonSelect label="Select Prefecture" placeholder="Prefectures">
+          <IonSelect
+            onIonChange={handlePrefectureChange}
+            label="Select Prefecture"
+            placeholder="Prefectures"
+          >
             {prefectures.map((prefecture: any) => (
               <IonSelectOption key={prefecture.id} value={prefecture.id}>
                 {prefecture.value}
@@ -83,13 +100,17 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
         </IonItem>
 
         <IonItem className="input-item">
-          <IonLabel position="stacked">Municipality</IonLabel>
-          <IonInput
-            value={municipality}
-            onIonChange={(e) => setMunicipality(e.detail.value!)}
-            placeholder="Enter Municipality"
-            required
-          />
+          <IonSelect
+            onIonChange={handleMunicipalityChange}
+            label="Select Municipality"
+            placeholder="Municipality"
+          >
+            {selectedMunicipalities.map((municipality: any) => (
+              <IonSelectOption key={municipality.id} value={municipality.id}>
+                {municipality.value}
+              </IonSelectOption>
+            ))}
+          </IonSelect>
         </IonItem>
 
         <IonItem className="input-item">
