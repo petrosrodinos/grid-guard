@@ -11,7 +11,6 @@ import {
   IonSelect,
   IonSelectOption,
   IonIcon,
-  IonButton,
   IonAlert,
 } from "@ionic/react";
 import {
@@ -26,17 +25,18 @@ import {
 } from "ionicons/icons";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import "./style.css";
 import supabase from "../../utils/supabase";
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "../../hooks/colorMode";
+import { useIonRouter } from "@ionic/react";
+import "./style.css";
 
 const Profile: React.FC = () => {
-  const [language, setLanguage] = useState("en");
   const [error, setError] = useState<string | null>(null);
   const history = useHistory();
   const { i18n } = useTranslation();
   const { darkMode, toggleColorMode } = useColorMode();
+  const router = useIonRouter();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -66,7 +66,7 @@ const Profile: React.FC = () => {
             <IonIcon icon={chevronForwardOutline} slot="end" />
           </IonItem>
 
-          <IonItem button onClick={() => history.push("/profile/phone")}>
+          <IonItem button onClick={() => router.push("/profile/phone")}>
             <IonIcon icon={call} slot="start" />
             <IonLabel>Phone Number</IonLabel>
             <IonIcon icon={chevronForwardOutline} slot="end" />
@@ -94,7 +94,7 @@ const Profile: React.FC = () => {
             <IonIcon icon={globe} slot="start" />
             <IonLabel>Language</IonLabel>
             <IonSelect
-              value={i18n.language}
+              value={i18n.language || "en"}
               placeholder="Select Language"
               onIonChange={(e) => handleChangeLanguage(e.detail.value)}
               slot="end"

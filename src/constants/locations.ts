@@ -4811,5 +4811,3 @@ export const municipalities = [
         ]
     }
 ]
-
-console.log("LENGTH", municipalities.length);

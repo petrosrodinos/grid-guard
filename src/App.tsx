@@ -67,51 +67,37 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/register">
-              <Register />
-            </Route>
-            <Route exact path="/validate-phone">
-              <ValidatePhone />
-            </Route>
-            <Route exact path="/home">
-              <Home />
-            </Route>
-            <Route exact path="/profile/details">
-              <Details />
-            </Route>
-            <Route exact path="/profile/phone">
-              <Phone />
-            </Route>
-            <Route exact path="/profile/password">
-              <Password />
-            </Route>
-            <Route exact path="/profile/notifications">
-              <Notifications />
-            </Route>
-            <Route exact path="/tab2">
-              <Tab2 />
-            </Route>
-            <Route path="/profile">
-              <Profile />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/home" />
-            </Route>
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/tab2" component={Tab2} />
+            <Route exact path="/profile" component={Profile} />
+
+            {/* Profile Sub-Pages */}
+            <Route exact path="/profile/details" component={Details} />
+            <Route exact path="/profile/phone" component={Phone} />
+            <Route exact path="/profile/password" component={Password} />
+            <Route exact path="/profile/notifications" component={Notifications} />
+
+            {/* Authentication Routes */}
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/validate-phone" component={ValidatePhone} />
+
+            <Redirect exact from="/" to="/home" />
           </IonRouterOutlet>
+
           <IonTabBar slot="bottom">
-            <IonTabButton tab="tab1" href="/home">
-              <IonIcon aria-hidden="true" icon={homeOutline} />
+            <IonTabButton tab="home" href="/home">
+              <IonIcon icon={homeOutline} />
               <IonLabel>Home</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="tab2" href="/tab2">
-              <IonIcon aria-hidden="true" icon={informationCircleOutline} />
+
+            <IonTabButton tab="info" href="/tab2">
+              <IonIcon icon={informationCircleOutline} />
               <IonLabel>Info</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="tab3" href="/profile">
-              <IonIcon aria-hidden="true" icon={personOutline} />
+
+            <IonTabButton tab="profile" href="/profile">
+              <IonIcon icon={personOutline} />
               <IonLabel>Profile</IonLabel>
             </IonTabButton>
           </IonTabBar>
