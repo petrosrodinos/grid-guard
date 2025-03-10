@@ -11,32 +11,33 @@ import {
   IonToggle,
   IonIcon,
 } from "@ionic/react";
-import { call, notifications } from "ionicons/icons";
+import { call, notifications, chatbubbles } from "ionicons/icons";
 import Header from "../../../components/Header";
 
 const Notifications: FC = () => {
-  const [powerPhone, setPowerPhone] = useState(false);
+  const [powerSMS, setPowerSMS] = useState(false);
   const [powerPush, setPowerPush] = useState(false);
-  const [waterPhone, setWaterPhone] = useState(false);
+  const [waterSMS, setWaterSMS] = useState(false);
   const [waterPush, setWaterPush] = useState(false);
+  const [powerViber, setPowerViber] = useState(false);
+  const [waterViber, setWaterViber] = useState(false);
 
   return (
     <IonPage>
       <Header title="Notifications" />
 
       <IonContent>
-        {/* Power Outage Card */}
         <IonCard>
           <IonCardHeader>
             <IonCardTitle>Power Outage</IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
             <IonItem>
-              <IonIcon icon={call} slot="start" />
-              <IonLabel>Phone Notifications</IonLabel>
+              <IonIcon icon={chatbubbles} slot="start" />
+              <IonLabel>SMS Notifications</IonLabel>
               <IonToggle
-                checked={powerPhone}
-                onIonChange={(e) => setPowerPhone(e.detail.checked)}
+                checked={powerSMS}
+                onIonChange={(e) => setPowerSMS(e.detail.checked)}
                 slot="end"
               />
             </IonItem>
@@ -49,21 +50,29 @@ const Notifications: FC = () => {
                 slot="end"
               />
             </IonItem>
+            <IonItem>
+              <IonIcon icon={call} slot="start" />
+              <IonLabel>Viber Notifications</IonLabel>
+              <IonToggle
+                checked={powerViber}
+                onIonChange={(e) => setPowerViber(e.detail.checked)}
+                slot="end"
+              />
+            </IonItem>
           </IonCardContent>
         </IonCard>
 
-        {/* Water Outage Card */}
         <IonCard>
           <IonCardHeader>
             <IonCardTitle>Water Outage</IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
             <IonItem>
-              <IonIcon icon={call} slot="start" />
-              <IonLabel>Phone Notifications</IonLabel>
+              <IonIcon icon={chatbubbles} slot="start" />
+              <IonLabel>SMS Notifications</IonLabel>
               <IonToggle
-                checked={waterPhone}
-                onIonChange={(e) => setWaterPhone(e.detail.checked)}
+                checked={waterSMS}
+                onIonChange={(e) => setWaterSMS(e.detail.checked)}
                 slot="end"
               />
             </IonItem>
@@ -73,6 +82,15 @@ const Notifications: FC = () => {
               <IonToggle
                 checked={waterPush}
                 onIonChange={(e) => setWaterPush(e.detail.checked)}
+                slot="end"
+              />
+            </IonItem>
+            <IonItem>
+              <IonIcon icon={call} slot="start" />
+              <IonLabel>Viber Notifications</IonLabel>
+              <IonToggle
+                checked={waterViber}
+                onIonChange={(e) => setWaterViber(e.detail.checked)}
                 slot="end"
               />
             </IonItem>
