@@ -29,13 +29,14 @@ import { useHistory } from "react-router-dom";
 import "./style.css";
 import supabase from "../../utils/supabase";
 import { useTranslation } from "react-i18next";
+import { useColorMode } from "../../hooks/colorMode";
 
 const Profile: React.FC = () => {
-  const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("en");
   const [error, setError] = useState<string | null>(null);
   const history = useHistory();
   const { i18n } = useTranslation();
+  const { darkMode, toggleColorMode } = useColorMode();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -86,11 +87,7 @@ const Profile: React.FC = () => {
           <IonItem>
             <IonIcon icon={moon} slot="start" />
             <IonLabel>Dark Mode</IonLabel>
-            <IonToggle
-              checked={darkMode}
-              onIonChange={(e) => setDarkMode(e.detail.checked)}
-              slot="end"
-            />
+            <IonToggle checked={darkMode} onIonChange={toggleColorMode} slot="end" />
           </IonItem>
 
           <IonItem>

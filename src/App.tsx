@@ -38,10 +38,10 @@ import "./global.css";
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* import '@ionic/react/css/palettes/dark.always.css'; */
+// /* import '@ionic/react/css/palettes/dark.always.css'; */
 /* import '@ionic/react/css/palettes/dark.class.css'; */
-import "@ionic/react/css/palettes/dark.system.css";
-
+// import "@ionic/react/css/palettes/dark.system.css";
+import "@ionic/react/css/palettes/dark.class.css";
 /* Theme variables */
 import "./theme/variables.css";
 import Profile from "./pages/Profile";
@@ -52,65 +52,73 @@ import Details from "./pages/Profile/Details";
 import Phone from "./pages/Profile/Phone";
 import Password from "./pages/Profile/Password";
 import Notifications from "./pages/Profile/Notifications";
+import { useEffect } from "react";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/register">
-            <Register />
-          </Route>
-          <Route exact path="/validate-phone">
-            <ValidatePhone />
-          </Route>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/profile/details">
-            <Details />
-          </Route>
-          <Route exact path="/profile/phone">
-            <Phone />
-          </Route>
-          <Route exact path="/profile/password">
-            <Password />
-          </Route>
-          <Route exact path="/profile/notifications">
-            <Notifications />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/profile">
-            <Profile />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/home">
-            <IonIcon aria-hidden="true" icon={homeOutline} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={informationCircleOutline} />
-            <IonLabel>Info</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/profile">
-            <IonIcon aria-hidden="true" icon={personOutline} />
-            <IonLabel>Profile</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  useEffect(() => {
+    const savedDarkMode = JSON.parse(localStorage.getItem("darkMode") || "false");
+    document.documentElement.classList.toggle("ion-palette-dark", savedDarkMode);
+  }, []);
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/register">
+              <Register />
+            </Route>
+            <Route exact path="/validate-phone">
+              <ValidatePhone />
+            </Route>
+            <Route exact path="/home">
+              <Home />
+            </Route>
+            <Route exact path="/profile/details">
+              <Details />
+            </Route>
+            <Route exact path="/profile/phone">
+              <Phone />
+            </Route>
+            <Route exact path="/profile/password">
+              <Password />
+            </Route>
+            <Route exact path="/profile/notifications">
+              <Notifications />
+            </Route>
+            <Route exact path="/tab2">
+              <Tab2 />
+            </Route>
+            <Route path="/profile">
+              <Profile />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/home" />
+            </Route>
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="tab1" href="/home">
+              <IonIcon aria-hidden="true" icon={homeOutline} />
+              <IonLabel>Home</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab2" href="/tab2">
+              <IonIcon aria-hidden="true" icon={informationCircleOutline} />
+              <IonLabel>Info</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab3" href="/profile">
+              <IonIcon aria-hidden="true" icon={personOutline} />
+              <IonLabel>Profile</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;
