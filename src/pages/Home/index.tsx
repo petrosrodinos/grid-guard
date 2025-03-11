@@ -56,7 +56,10 @@ const Home: React.FC = () => {
         <AddLocation
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          onAddLocation={getLocationsWithOutages}
+          onAddLocation={() => {
+            getLocationsWithOutages();
+            setIsOpen(false);
+          }}
         />
       </IonContent>
     </IonPage>

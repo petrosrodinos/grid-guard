@@ -121,7 +121,14 @@ const Details: FC = () => {
           Add Location
         </IonButton>
       </IonContent>
-      <AddLocation isOpen={isOpen} setIsOpen={setIsOpen} onAddLocation={fetchLocations} />
+      <AddLocation
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        onAddLocation={() => {
+          fetchLocations();
+          setIsOpen(false);
+        }}
+      />
 
       <IonAlert
         isOpen={!!error}
