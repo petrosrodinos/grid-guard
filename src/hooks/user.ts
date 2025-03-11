@@ -1,6 +1,6 @@
 import { useState } from "react";
 import supabase from "../utils/supabase";
-import { useIonLoading } from "@ionic/react";
+import { useIonLoading, useIonToast } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 
 export const useUser = () => {
@@ -9,6 +9,8 @@ export const useUser = () => {
     const [data, setData] = useState<any>(null);
     const [present, dismiss] = useIonLoading();
     const histort = useHistory();
+    const [presentToast] = useIonToast();
+
 
     const getUser = async () => {
         try {
@@ -71,11 +73,24 @@ export const useUser = () => {
             present({
                 message: "Updating",
             })
-            const { error } = await supabase.from("users").upsert(data)
+            const userId = JSON.parse(localStorage.getItem("userId") || "{}");
+
+            if (typeof userId !== "string") {
+                histort.push("/login")
+                return;
+            }
+            const { error } = await supabase.from("users").update(data).eq("user_id", userId)
             if (error) {
                 setError(error.message)
                 return
             }
+            presentToast({
+                message: "Location Deleted successfully",
+                duration: 1500,
+                position: "top",
+                cssClass: "toast-success",
+            });
+
         } catch (error: any) {
             setError(error.message)
 

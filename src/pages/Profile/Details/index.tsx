@@ -44,7 +44,6 @@ const Details: FC = () => {
 
   const handleEdit = async (data: any) => {
     const res = await updateLocation(data);
-    console.log("RES", res);
   };
 
   const handleDelete = async (id: string) => {
@@ -59,7 +58,7 @@ const Details: FC = () => {
       setError("Please fill all the fields");
       return;
     }
-    const data = await updateUser({ fullName });
+    const data = await updateUser({ full_name: fullName });
   };
 
   const handleAddLocation = () => {
