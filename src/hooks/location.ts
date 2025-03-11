@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import supabase from "../utils/supabase"
-import { useIonLoading } from "@ionic/react"
+import { useIonLoading, useIonToast } from "@ionic/react"
 import { useUser } from "./user"
 
 export const useLocation = () => {
@@ -8,6 +8,8 @@ export const useLocation = () => {
     const [error, setError] = useState<string | null>(null)
     const [data, setData] = useState<any>([])
     const [present, dismiss] = useIonLoading();
+    const [presentToast] = useIonToast();
+
 
     useEffect(() => {
         try {
@@ -133,11 +135,18 @@ export const useLocation = () => {
             present({
                 message: "Updating",
             })
-            const { error } = await supabase.from("locations").upsert(data)
+            const { error } = await supabase.from("locations").update(data).eq("id", data.id)
             if (error) {
                 setError(error.message)
-                return
+                return null;
             }
+            presentToast({
+                message: "Location Updated successfully",
+                duration: 1500,
+                position: "top",
+                cssClass: "toast-success",
+            });
+            return true;
         } catch (error: any) {
             setError(error.message)
 
@@ -157,6 +166,12 @@ export const useLocation = () => {
                 setError(error.message)
                 return
             }
+            presentToast({
+                message: "Location Deleted successfully",
+                duration: 1500,
+                position: "top",
+                cssClass: "toast-success",
+            });
             return true
         } catch (error: any) {
             setError(error.message)

@@ -23,28 +23,38 @@ interface LocationCardProps {
 
 const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete }) => {
   const { id, address, municipality, prefecture } = location;
-  const [prefectureValue, setPrefectureValue] = useState(prefecture);
-  const [municipalityValue, setMunicipalityValue] = useState<any>();
   const [selectedMunicipalities, setMunicipalities] = useState<any[]>([]);
-  const [addressValue, setAddressValue] = useState(address);
+
+  const [values, setValues] = useState<any>({
+    id,
+    prefecture: prefecture || "",
+    municipality: municipality || "",
+    address: address || "",
+  });
 
   useEffect(() => {
     const values =
       municipalities.find((value: any) => value.id == prefecture)?.municipalities || [];
     setMunicipalities(values);
-    setMunicipalityValue(municipality);
+    setValues({
+      id,
+      prefecture: prefecture,
+      municipality: municipality,
+      address: address,
+    });
   }, [location]);
 
   const handlePrefectureChange = (e: any) => {
     const id = e.detail.value.toString();
-    setPrefectureValue(id);
-    const values =
+    setValues({ ...values, prefecture: id });
+    const vals =
       municipalities.find((prefecture: any) => prefecture.id == id)?.municipalities || [];
-    setMunicipalities(values);
+    setMunicipalities(vals);
   };
 
   const handleMunicipalityChange = (e: any) => {
-    setMunicipalityValue(e.detail.value);
+    const id = e.detail.value.toString();
+    setValues({ ...values, municipality: id });
   };
 
   return (
@@ -59,7 +69,7 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete 
             onIonChange={handlePrefectureChange}
             label="Select Prefecture"
             placeholder="Prefectures"
-            value={prefectureValue}
+            value={values.prefecture}
           >
             {prefectures.map((prefecture: any) => (
               <IonSelectOption key={prefecture.id} value={prefecture.id}>
@@ -74,7 +84,7 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete 
             onIonChange={handleMunicipalityChange}
             label="Select Municipality"
             placeholder="Municipality"
-            value={municipalityValue}
+            value={values.municipality}
           >
             {selectedMunicipalities.map((municipality: any) => (
               <IonSelectOption key={municipality.id} value={municipality.id}>
@@ -87,14 +97,14 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete 
         <IonItem className="input-item">
           <IonLabel position="stacked">Address</IonLabel>
           <IonInput
-            value={addressValue}
-            onIonChange={(e) => setAddressValue(e.detail.value!)}
+            value={values.address}
+            onIonChange={(e) => setValues({ ...values, address: e.detail.value! })}
             placeholder="Enter Address"
             required
           />
         </IonItem>
 
-        <IonButton color="success" onClick={() => onEdit(id)}>
+        <IonButton color="success" onClick={() => onEdit(values)}>
           <IonIcon icon={pencilOutline} slot="start" />
           Save
         </IonButton>

@@ -42,17 +42,15 @@ const Details: FC = () => {
     setLocations(locations);
   };
 
-  const handleEdit = (id: string) => {
-    console.log(`Edit location with ID: ${id}`);
+  const handleEdit = async (data: any) => {
+    const res = await updateLocation(data);
+    console.log("RES", res);
   };
 
   const handleDelete = async (id: string) => {
     const res = await deleteLocation(id);
-    console.log("RED", res);
     if (res) {
       setLocations(locations.filter((location) => location.id !== id));
-    } else {
-      setError("Failed to delete location");
     }
   };
 
@@ -111,17 +109,17 @@ const Details: FC = () => {
                 </p>
               </IonCardContent>
             </IonCard>
-            <IonButton
-              onClick={handleAddLocation}
-              expand="block"
-              color="success"
-              className="add-location-button"
-            >
-              <IonIcon slot="start" icon={locationOutline} />
-              Add Location
-            </IonButton>
           </>
         )}
+        <IonButton
+          onClick={handleAddLocation}
+          expand="block"
+          color="success"
+          className="add-location-button"
+        >
+          <IonIcon slot="start" icon={locationOutline} />
+          Add Location
+        </IonButton>
       </IonContent>
       <AddLocation isOpen={isOpen} setIsOpen={setIsOpen} onAddLocation={fetchLocations} />
 
