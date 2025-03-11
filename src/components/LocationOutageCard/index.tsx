@@ -37,7 +37,7 @@ const LocationOutageCard: FC<LocationCardProps> = ({ location }) => {
   const { prefecture, municipality, address } = location;
   return (
     <div>
-      <IonCard className="location-card">
+      <div className="location-card">
         <IonCardHeader>
           <IonCardTitle>{address}</IonCardTitle>
           <IonCardSubtitle className="small-grey-text">
@@ -84,7 +84,7 @@ const LocationOutageCard: FC<LocationCardProps> = ({ location }) => {
             ))}
           </IonList>
         </IonCardContent>
-      </IonCard>
+      </div>
     </div>
   );
 };

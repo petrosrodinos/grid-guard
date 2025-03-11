@@ -94,9 +94,9 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete 
           />
         </IonItem>
 
-        <IonButton color="primary" onClick={() => onEdit(id)}>
+        <IonButton color="success" onClick={() => onEdit(id)}>
           <IonIcon icon={pencilOutline} slot="start" />
-          Edit
+          Save
         </IonButton>
         <IonButton color="danger" onClick={() => onDelete(id)}>
           <IonIcon icon={trashOutline} slot="start" />

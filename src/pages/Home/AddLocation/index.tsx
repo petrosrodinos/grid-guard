@@ -24,9 +24,10 @@ import "./style.css";
 interface AddLocationProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  onAddLocation?: () => void;
 }
 
-const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
+const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen, onAddLocation }) => {
   const [prefecture, setPrefecture] = useState("");
   const [municipality, setMunicipality] = useState("");
   const [address, setAddress] = useState("");
@@ -51,6 +52,7 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen }) => {
         position: "top",
         cssClass: "toast-success",
       });
+      onAddLocation?.();
     }
   };
 

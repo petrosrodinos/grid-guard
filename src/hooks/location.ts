@@ -104,6 +104,11 @@ export const useLocation = () => {
         try {
             const userId = JSON.parse(localStorage.getItem("userId") || "{}");
 
+            if (typeof userId !== "string") {
+                setError("User not found")
+                return null;
+            }
+
             const { data, error } = await supabase
                 .from('locations')
                 .select('*')

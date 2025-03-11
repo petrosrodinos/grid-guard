@@ -10,7 +10,7 @@ import "./style.css";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: locations, error, setError } = useLocation();
+  const { data: locations, error, setError, getLocationsWithOutages } = useLocation();
   const { t } = useTranslation();
 
   const handleAddLocation = () => {
@@ -53,7 +53,11 @@ const Home: React.FC = () => {
           )}
         </div>
 
-        <AddLocation isOpen={isOpen} setIsOpen={setIsOpen} />
+        <AddLocation
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          onAddLocation={getLocationsWithOutages}
+        />
       </IonContent>
     </IonPage>
   );

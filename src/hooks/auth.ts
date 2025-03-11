@@ -1,12 +1,15 @@
 import { useState } from "react";
 import supabase from "../utils/supabase";
 import { useIonLoading } from "@ionic/react";
+import { useHistory } from "react-router-dom";
 
 export const useAuth = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<any>(null);
     const [present, dismiss] = useIonLoading();
+    const history = useHistory();
+
 
     const registerUser = async ({ phone, password, fullName }: any) => {
         try {
@@ -138,8 +141,21 @@ export const useAuth = () => {
         }
     }
 
+    const logOut = async () => {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                setError(error.message);
+                return;
+            }
+            history.push("/login");
+        } catch (error: any) {
+            setError(error.message);
+        }
+    }
 
 
 
-    return { registerUser, loginUser, error, loading, data, setError, verifyOtp, resendOtp };
+
+    return { registerUser, loginUser, logOut, error, loading, data, setError, verifyOtp, resendOtp };
 }

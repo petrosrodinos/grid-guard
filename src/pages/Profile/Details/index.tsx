@@ -1,7 +1,10 @@
 import {
   IonAlert,
   IonButton,
+  IonCard,
+  IonCardContent,
   IonContent,
+  IonIcon,
   IonInput,
   IonItem,
   IonLabel,
@@ -13,27 +16,31 @@ import Header from "../../../components/Header";
 import { useUser } from "../../../hooks/user";
 import { useLocation } from "../../../hooks/location";
 import LocationCard from "../../../components/LocationCard";
+import { locationOutline } from "ionicons/icons";
+import AddLocation from "../../Home/AddLocation";
 
 const Details: FC = () => {
   const [fullName, setFullName] = useState("");
   const { updateUser, error, setError, getUserData } = useUser();
   const { getLocations, updateLocation, deleteLocation } = useLocation();
   const [locations, setLocations] = useState<any[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const data: any = await getUserData();
-      if (data) {
-        setFullName(data.full_name);
-      }
-    };
-    const fetchLocations = async () => {
-      const locations: any = await getLocations();
-      setLocations(locations);
-    };
     fetchUser();
     fetchLocations();
   }, []);
+
+  const fetchUser = async () => {
+    const data: any = await getUserData();
+    if (data) {
+      setFullName(data.full_name);
+    }
+  };
+  const fetchLocations = async () => {
+    const locations: any = await getLocations();
+    setLocations(locations);
+  };
 
   const handleEdit = (id: string) => {
     console.log(`Edit location with ID: ${id}`);
@@ -41,6 +48,7 @@ const Details: FC = () => {
 
   const handleDelete = async (id: string) => {
     const res = await deleteLocation(id);
+    console.log("RED", res);
     if (res) {
       setLocations(locations.filter((location) => location.id !== id));
     } else {
@@ -54,6 +62,10 @@ const Details: FC = () => {
       return;
     }
     const data = await updateUser({ fullName });
+  };
+
+  const handleAddLocation = () => {
+    setIsOpen(true);
   };
   return (
     <IonPage>
@@ -73,9 +85,12 @@ const Details: FC = () => {
             required
           />
         </IonItem>
+        <IonButton expand="block" onClick={handleUpdate} className="register-button">
+          Update
+        </IonButton>
         <h3>Locations</h3>
 
-        {locations?.length > 0 && (
+        {locations?.length > 0 ? (
           <IonList>
             {locations.map((location) => (
               <LocationCard
@@ -86,11 +101,30 @@ const Details: FC = () => {
               />
             ))}
           </IonList>
+        ) : (
+          <>
+            <IonCard className="info-card">
+              <IonCardContent>
+                <p>
+                  There are no added locations to keep track. Please add now by pressing the button
+                  below.
+                </p>
+              </IonCardContent>
+            </IonCard>
+            <IonButton
+              onClick={handleAddLocation}
+              expand="block"
+              color="success"
+              className="add-location-button"
+            >
+              <IonIcon slot="start" icon={locationOutline} />
+              Add Location
+            </IonButton>
+          </>
         )}
-        <IonButton expand="block" onClick={handleUpdate} className="register-button">
-          Update
-        </IonButton>
       </IonContent>
+      <AddLocation isOpen={isOpen} setIsOpen={setIsOpen} onAddLocation={fetchLocations} />
+
       <IonAlert
         isOpen={!!error}
         header="Error"
