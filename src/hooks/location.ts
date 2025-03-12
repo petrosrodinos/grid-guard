@@ -2,14 +2,16 @@ import { useEffect, useState } from "react"
 import supabase from "../utils/supabase"
 import { useIonLoading, useIonToast } from "@ionic/react"
 import { useUser } from "./user"
+import { useAuth } from "./auth"
 
 export const useLocation = () => {
-    const { getUser } = useUser()
+    const { getUserSession } = useAuth()
     const [error, setError] = useState<string | null>(null)
     const [data, setData] = useState<any>([])
     const [present, dismiss] = useIonLoading();
     const [presentToast] = useIonToast();
     const [loading, setLoading] = useState<boolean>(false);
+
 
     const addLocation = async ({
         prefecture,
@@ -21,15 +23,11 @@ export const useLocation = () => {
             message: "Adding Location",
         })
         try {
-            const user = await getUser();
-            if (!user) {
-                setError("User not found")
-                return;
-            }
+            const session = await getUserSession()
 
             const { error } = await supabase
                 .from('locations')
-                .insert({ user_id: user.id, prefecture, municipality, address, name })
+                .insert({ user_id: session?.session?.user.id, prefecture, municipality, address, name })
 
             if (error) {
                 setError(error.message);
@@ -99,17 +97,14 @@ export const useLocation = () => {
     const getLocations = async () => {
         try {
             setLoading(true);
-            const userId = JSON.parse(localStorage.getItem("userId") || "{}");
 
-            if (typeof userId !== "string") {
-                setError("User not found")
-                return null;
-            }
+            const session = await getUserSession()
+
 
             const { data, error } = await supabase
                 .from('locations')
                 .select('*')
-                .eq('user_id', userId);
+                .eq('user_id', session?.session?.user.id);
 
             if (error) {
                 setError(error.message);

@@ -10,7 +10,6 @@ export const useAuth = () => {
     const [present, dismiss] = useIonLoading();
     const history = useHistory();
 
-
     const registerUser = async ({ phone, password, fullName }: any) => {
         try {
             present({
@@ -37,14 +36,13 @@ export const useAuth = () => {
             }
 
             if (data) {
-                await supabase.from("users").upsert({
+                await supabase.from("users").insert({
                     user_id: data.user?.id,
                     full_name: fullName,
                     email: "",
                     phone: `+30${phone}`,
                 });
                 setData(data)
-                localStorage.setItem("userId", JSON.stringify(data.user?.id))
                 return data
             }
         } catch (error: any) {
@@ -72,7 +70,6 @@ export const useAuth = () => {
 
             if (data) {
                 setData(data)
-                localStorage.setItem("userId", JSON.stringify(data.user?.id))
                 return data
             }
         } catch (error: any) {
@@ -141,6 +138,24 @@ export const useAuth = () => {
         }
     }
 
+    const getUserSession = async () => {
+        try {
+            const { data, error } = await supabase.auth.getSession();
+
+
+            if (error) {
+                history.push("/login")
+                return;
+            }
+            if (data) {
+                return data;
+            }
+        } catch (error: any) {
+            setError(error.message);
+            history.push("/login")
+        }
+    }
+
     const logOut = async () => {
         try {
             const { error } = await supabase.auth.signOut();
@@ -157,5 +172,7 @@ export const useAuth = () => {
 
 
 
-    return { registerUser, loginUser, logOut, error, loading, data, setError, verifyOtp, resendOtp };
+
+
+    return { registerUser, loginUser, logOut, error, loading, data, setError, verifyOtp, resendOtp, getUserSession }
 }

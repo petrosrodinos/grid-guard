@@ -31,6 +31,22 @@ const SUPABASE_URL = "https://euvudpathmunydhhvtyh.supabase.co"
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const getUserOutages = async () => {
+    const usersWithLocations = await getUsersWithLocations();
+
+    const usersWithOutages = await Promise.all(usersWithLocations.map(async user => {
+        const { locations } = user;
+        const outages = await Promise.all(locations.map(async (location: any) => {
+            const { prefecture, municipality } = location;
+            return await getLocationOutageData(prefecture, municipality);
+        }));
+
+        return { ...user, outages };
+    }));
+
+    return usersWithOutages;
+}
+
 const getUsersWithLocations = async () => {
     try {
         const { data, error } = await supabase.from('users').select(`
@@ -38,7 +54,7 @@ const getUsersWithLocations = async () => {
             full_name,
             phone,
             user_id,
-            locations ( id, prefecture,municipality,address )
+            locations (prefecture,municipality,address,name )
           `);
 
         if (error) {
@@ -54,34 +70,38 @@ const getUsersWithLocations = async () => {
 
 
 const getLocationOutageData = async (prefecture: string, municipality: string) => {
-    // const browser = await puppeteer.launch({ headless: true });
-    const browser = await puppeteer.launch({
-        executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        headless: true
-    });
-    const page = await browser.newPage();
-    await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
-
-    await page.select("#PrefectureID", prefecture);
-    await page.waitForTimeout(1000);
-
-    await page.select("#MunicipalityID", municipality);
-    await page.waitForTimeout(2000);
-
-    const tableData = await page.evaluate(() => {
-        const table = document.querySelector("#tblOutages");
-        if (!table) return [];
-
-        const rows = Array.from(table.querySelectorAll("tbody tr"));
-        return rows.map(row => {
-            return Array.from(row.querySelectorAll("td")).map(td => td.innerText.trim());
+    try {
+        // const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            headless: true
         });
-    });
+        const page = await browser.newPage();
+        await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
 
-    await browser.close();
+        await page.select("#PrefectureID", prefecture);
+        await page.waitForTimeout(1000);
 
-    const formattedData = formatData(tableData);
-    return formattedData;
+        await page.select("#MunicipalityID", municipality);
+        await page.waitForTimeout(2000);
+
+        const tableData = await page.evaluate(() => {
+            const table = document.querySelector("#tblOutages");
+            if (!table) return [];
+
+            const rows = Array.from(table.querySelectorAll("tbody tr"));
+            return rows.map(row => {
+                return Array.from(row.querySelectorAll("td")).map(td => td.innerText.trim());
+            });
+        });
+
+        await browser.close();
+
+        const formattedData = formatData(tableData);
+        return formattedData;
+    } catch (error) {
+        throw error;
+    }
 };
 
 function formatData(data: DataItem[]): FormattedData[] {
