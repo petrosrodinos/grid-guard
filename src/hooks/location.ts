@@ -9,6 +9,7 @@ export const useLocation = () => {
     const [data, setData] = useState<any>([])
     const [present, dismiss] = useIonLoading();
     const [presentToast] = useIonToast();
+    const [loading, setLoading] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -104,6 +105,7 @@ export const useLocation = () => {
 
     const getLocations = async () => {
         try {
+            setLoading(true);
             const userId = JSON.parse(localStorage.getItem("userId") || "{}");
 
             if (typeof userId !== "string") {
@@ -125,8 +127,12 @@ export const useLocation = () => {
             return data;
 
         } catch (error: any) {
+
             setError(error.message)
             return null;
+        }
+        finally {
+            setLoading(false)
         }
     }
 
@@ -184,6 +190,6 @@ export const useLocation = () => {
 
 
     return {
-        addLocation, error, data, setData, setError, getLocationsWithOutages, updateLocation, getLocations, deleteLocation
+        addLocation, error, data, setData, setError, getLocationsWithOutages, updateLocation, getLocations, deleteLocation, loading
     }
 }

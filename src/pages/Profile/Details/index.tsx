@@ -10,6 +10,7 @@ import {
   IonLabel,
   IonList,
   IonPage,
+  IonSpinner,
 } from "@ionic/react";
 import { FC, useEffect, useState } from "react";
 import Header from "../../../components/Header";
@@ -21,8 +22,8 @@ import AddLocation from "../../Home/AddLocation";
 
 const Details: FC = () => {
   const [fullName, setFullName] = useState("");
-  const { updateUser, error, setError, getUserData } = useUser();
-  const { getLocations, updateLocation, deleteLocation } = useLocation();
+  const { updateUser, error, setError, getUserData, loading: userLoading } = useUser();
+  const { getLocations, updateLocation, deleteLocation, loading } = useLocation();
   const [locations, setLocations] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -73,42 +74,49 @@ const Details: FC = () => {
           Below are the fields you can update. Please fill in the details and click on the update
           button to save the changes.
         </p>
-        <IonItem className="input-item">
-          <IonLabel position="stacked">Full Name</IonLabel>
-          <IonInput
-            type="text"
-            value={fullName}
-            onIonChange={(e) => setFullName(e.detail.value!)}
-            required
-          />
-        </IonItem>
-        <IonButton expand="block" onClick={handleUpdate} className="register-button">
-          Update
-        </IonButton>
-        <h3>Locations</h3>
 
-        {locations?.length > 0 ? (
-          <IonList>
-            {locations.map((location) => (
-              <LocationCard
-                key={location.id}
-                location={location}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+        {!userLoading || !loading ? (
+          <div>
+            <IonItem className="input-item">
+              <IonLabel position="stacked">Full Name</IonLabel>
+              <IonInput
+                type="text"
+                value={fullName}
+                onIonChange={(e) => setFullName(e.detail.value!)}
+                required
               />
-            ))}
-          </IonList>
+            </IonItem>
+            <IonButton expand="block" onClick={handleUpdate} className="register-button">
+              Update
+            </IonButton>
+            <h3>Locations</h3>
+
+            {locations?.length > 0 ? (
+              <div>
+                {locations.map((location) => (
+                  <LocationCard
+                    key={location.id}
+                    location={location}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            ) : (
+              <>
+                <IonCard className="info-card">
+                  <IonCardContent>
+                    <p>
+                      There are no added locations to keep track. Please add now by pressing the
+                      button below.
+                    </p>
+                  </IonCardContent>
+                </IonCard>
+              </>
+            )}
+          </div>
         ) : (
-          <>
-            <IonCard className="info-card">
-              <IonCardContent>
-                <p>
-                  There are no added locations to keep track. Please add now by pressing the button
-                  below.
-                </p>
-              </IonCardContent>
-            </IonCard>
-          </>
+          <IonSpinner color="success" style={{ margin: "0 auto", width: "100%" }}></IonSpinner>
         )}
         <IonButton
           onClick={handleAddLocation}

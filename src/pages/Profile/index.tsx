@@ -56,7 +56,7 @@ const Profile: React.FC = () => {
     <IonPage>
       <Header title="Profile" />
       <IonContent fullscreen>
-        <IonList style={{ maxWidth: "500px", margin: "0 auto" }}>
+        <IonList style={{ margin: "0 auto" }}>
           <IonItem button onClick={() => history.push("/profile/details")}>
             <IonIcon icon={person} slot="start" />
             <IonLabel>Profile</IonLabel>

@@ -14,7 +14,7 @@ export const useUser = () => {
 
     const getUser = async () => {
         try {
-
+            setLoading(true)
             const { error, data: { user } } = await supabase.auth.getUser()
 
 
@@ -32,6 +32,7 @@ export const useUser = () => {
             setError(error.message)
         }
         finally {
+            setLoading(false)
         }
     };
 
@@ -43,6 +44,7 @@ export const useUser = () => {
             //     setError(userError.message);
             //     return;
             // }
+            setLoading(true)
             const userId = JSON.parse(localStorage.getItem("userId") || "{}");
 
             if (typeof userId !== "string") {
@@ -65,6 +67,7 @@ export const useUser = () => {
         }
         finally {
             dismiss()
+            setLoading(false)
         }
     }
 
