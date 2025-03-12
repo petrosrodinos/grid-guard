@@ -11,19 +11,11 @@ export const useLocation = () => {
     const [presentToast] = useIonToast();
     const [loading, setLoading] = useState<boolean>(false);
 
-
-    useEffect(() => {
-        try {
-            getLocationsWithOutages()
-        } catch (error: any) {
-            setError(error.message)
-        }
-    }, [])
-
     const addLocation = async ({
         prefecture,
         municipality,
         address,
+        name,
     }: any) => {
         present({
             message: "Adding Location",
@@ -37,7 +29,7 @@ export const useLocation = () => {
 
             const { error } = await supabase
                 .from('locations')
-                .insert({ user_id: user.id, prefecture, municipality, address })
+                .insert({ user_id: user.id, prefecture, municipality, address, name })
 
             if (error) {
                 setError(error.message);
@@ -58,49 +50,50 @@ export const useLocation = () => {
 
     }
 
-    const getLocationsWithOutages = async () => {
-        setData(
-            [
-                {
-                    prefecture: "Tokyo",
-                    municipality: "Shinjuku",
-                    address: "Shinjuku Station",
-                    outage: [
-                        {
-                            from: "2025-03-11 10:00",
-                            to: "2025-03-11 14:00",
-                            area: "Main Street & 5th Ave",
-                            reason: "Scheduled maintenance",
-                        },
-                        {
-                            from: "2025-03-12 08:00",
-                            to: "2025-03-12 12:00",
-                            area: "Downtown District",
-                            reason: "Emergency repair"
-                        }
-                    ]
-                },
-                {
-                    prefecture: "Tokyo",
-                    municipality: "Shibuya",
-                    address: "Shibuya Crossing",
-                    outage: [
-                        {
-                            from: "2025-03-11 10:00",
-                            to: "2025-03-11 14:00",
-                            area: "Main Street & 5th Ave",
-                            reason: "Scheduled maintenance",
-                        },
-                        {
-                            from: "2025-03-12 08:00",
-                            to: "2025-03-12 12:00",
-                            area: "Downtown District",
-                            reason: "Emergency repair"
-                        }
-                    ]
-                }
-            ]
-        );
+    const getLocationsWithOutages = async (): Promise<any[]> => {
+        return [
+            {
+                prefecture: "67",
+                municipality: "1530",
+                address: "Shinjuku Station",
+                name: "home",
+                outages: [
+                    {
+                        from: "2025-03-11 10:00",
+                        to: "2025-03-11 14:00",
+                        area: "Main Street & 5th Ave",
+                        reason: "Scheduled maintenance",
+                    },
+                    {
+                        from: "2025-03-12 08:00",
+                        to: "2025-03-12 12:00",
+                        area: "Downtown District",
+                        reason: "Emergency repair"
+                    }
+                ]
+            },
+            {
+                name: "home",
+                prefecture: "8",
+                municipality: "67",
+                address: "Shibuya Crossing",
+                outages: [
+                    {
+                        from: "2025-03-11 10:00",
+                        to: "2025-03-11 14:00",
+                        area: "Main Street & 5th Ave",
+                        reason: "Scheduled maintenance",
+                    },
+                    {
+                        from: "2025-03-12 08:00",
+                        to: "2025-03-12 12:00",
+                        area: "Downtown District",
+                        reason: "Emergency repair"
+                    }
+                ]
+            }
+        ]
+
     }
 
     const getLocations = async () => {

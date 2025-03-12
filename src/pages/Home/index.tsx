@@ -1,17 +1,28 @@
 import { IonContent, IonPage, IonButton, IonCard, IonCardContent, IonIcon } from "@ionic/react";
 import { locationOutline } from "ionicons/icons";
 import Header from "../../components/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddLocation from "./AddLocation";
 import { useLocation } from "../../hooks/location";
 import { useTranslation } from "react-i18next";
 import LocationOutageCard from "../../components/LocationOutageCard";
+import { Location } from "../../interfaces/location";
 import "./style.css";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: locations, error, setError, getLocationsWithOutages } = useLocation();
+  const [locations, setLocations] = useState<Location[]>([]);
+  const { error, setError, getLocationsWithOutages } = useLocation();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    getOutages();
+  }, []);
+
+  const getOutages = async () => {
+    const outages = await getLocationsWithOutages();
+    setLocations(outages);
+  };
 
   const handleAddLocation = () => {
     setIsOpen(true);

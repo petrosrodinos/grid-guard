@@ -14,19 +14,21 @@ import {
 } from "@ionic/react";
 import { pencilOutline, trashOutline } from "ionicons/icons";
 import { municipalities, prefectures } from "../../constants/locations";
+import { Location } from "../../interfaces/location";
 
 interface LocationCardProps {
-  location: any;
+  location: Location;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
 const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete }) => {
-  const { id, address, municipality, prefecture } = location;
+  const { id, address, municipality, prefecture, name } = location;
   const [selectedMunicipalities, setMunicipalities] = useState<any[]>([]);
 
   const [values, setValues] = useState<any>({
     id,
+    name: name || "",
     prefecture: prefecture || "",
     municipality: municipality || "",
     address: address || "",
@@ -60,10 +62,19 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onEdit, onDelete 
   return (
     <IonCard>
       <IonCardHeader>
-        <IonCardTitle>{address}</IonCardTitle>
+        <IonCardTitle>{name}</IonCardTitle>
       </IonCardHeader>
 
       <IonCardContent>
+        <IonItem className="input-item">
+          <IonLabel position="stacked">Location Name</IonLabel>
+          <IonInput
+            value={name}
+            onIonChange={(e) => setValues({ ...values, address: e.detail.value! })}
+            placeholder="Give a name to this location (home)"
+            required
+          />
+        </IonItem>
         <IonItem className="input-item">
           <IonSelect
             onIonChange={handlePrefectureChange}

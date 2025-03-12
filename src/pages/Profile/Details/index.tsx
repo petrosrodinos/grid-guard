@@ -44,7 +44,7 @@ const Details: FC = () => {
   };
 
   const handleEdit = async (data: any) => {
-    const res = await updateLocation(data);
+    await updateLocation(data);
   };
 
   const handleDelete = async (id: string) => {

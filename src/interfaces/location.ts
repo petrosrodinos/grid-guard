@@ -1,8 +1,11 @@
 export interface Location {
+    id: string,
+    user_id: string,
     prefecture: string,
     municipality: string,
     address: string,
-    outage: Outage[]
+    name: string
+    outages?: Outage[]
 }
 
 export interface Outage {

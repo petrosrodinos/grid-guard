@@ -10,43 +10,42 @@ import {
   IonLabel,
 } from "@ionic/react";
 import { timeOutline, locationOutline, alertCircleOutline } from "ionicons/icons";
-import { FC } from "react";
-import "./style.css";
+import { FC, useMemo } from "react";
 import { Location } from "../../interfaces/location";
+import "./style.css";
+import { municipalities, prefectures } from "../../constants/locations";
 
 interface LocationCardProps {
   location: Location;
 }
 
-const outageData = [
-  {
-    from: "2025-03-11 10:00",
-    to: "2025-03-11 14:00",
-    area: "Main Street & 5th Ave",
-    reason: "Scheduled maintenance",
-  },
-  {
-    from: "2025-03-12 08:00",
-    to: "2025-03-12 12:00",
-    area: "Downtown District",
-    reason: "Emergency repair",
-  },
-];
-
 const LocationOutageCard: FC<LocationCardProps> = ({ location }) => {
-  const { prefecture, municipality, address } = location;
+  const { prefecture, municipality, address, name, outages } = location;
+
+  const prefectureName = useMemo(() => {
+    return prefectures.find((pref) => pref.id === prefecture)?.value;
+  }, [prefecture]);
+
+  const municipalityName = useMemo(() => {
+    return municipalities
+      .find((m) => m.id == prefecture)
+      ?.municipalities.find((muni) => muni.id == municipality)?.value;
+  }, [prefectureName]);
+
   return (
     <div>
       <div className="location-card">
         <IonCardHeader>
-          <IonCardTitle>{address}</IonCardTitle>
+          <IonCardTitle>
+            {name} - {address}
+          </IonCardTitle>
           <IonCardSubtitle className="small-grey-text">
-            {prefecture} - {municipality}
+            {prefectureName} - {municipalityName}
           </IonCardSubtitle>
         </IonCardHeader>
         <IonCardContent>
           <IonList>
-            {outageData.map((outage, idx) => (
+            {outages?.map((outage, idx) => (
               <IonCard key={idx} className="outage-card">
                 <IonCardHeader>
                   <IonCardTitle>Outage Information</IonCardTitle>

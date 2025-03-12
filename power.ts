@@ -1,4 +1,5 @@
 import puppeteer from "https://deno.land/x/puppeteer@16.2.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 
 type DataItem = [
@@ -23,21 +24,48 @@ interface DateTime {
     time: string;
 }
 
-const url = "https://siteapps.deddie.gr/outages2public";
+const OUTAGES_LINK = "https://siteapps.deddie.gr/outages2public";
 
-const getOutageData = async () => {
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dnVkcGF0aG11bnlkaGh2dHloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1MzQzNzAsImV4cCI6MjA1NzExMDM3MH0.qVcfH7_hiiYP9S6AOuzbsnC72ud7njNmfBnpek89pvg"
+const SUPABASE_URL = "https://euvudpathmunydhhvtyh.supabase.co"
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const getUsersWithLocations = async () => {
+    try {
+        const { data, error } = await supabase.from('users').select(`
+            id,
+            full_name,
+            phone,
+            user_id,
+            locations ( id, prefecture,municipality,address )
+          `);
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+const getLocationOutageData = async (prefecture: string, municipality: string) => {
     // const browser = await puppeteer.launch({ headless: true });
     const browser = await puppeteer.launch({
         executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
         headless: true
     });
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
 
-    await page.select("#PrefectureID", "21");
+    await page.select("#PrefectureID", prefecture);
     await page.waitForTimeout(1000);
 
-    await page.select("#MunicipalityID", "413");
+    await page.select("#MunicipalityID", municipality);
     await page.waitForTimeout(2000);
 
     const tableData = await page.evaluate(() => {
@@ -77,4 +105,6 @@ function formatData(data: DataItem[]): FormattedData[] {
     });
 }
 
-getOutageData().then(data => console.log("Outage Data:", data)).catch(console.error);
+// getLocationOutageData("21", "413").then(data => console.log("Outage Data:", data)).catch(console.error);
+
+getUsersWithLocations().then(data => console.log("Users Data:", data)).catch(console.error);

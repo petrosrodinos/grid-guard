@@ -31,6 +31,7 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen, onAddLocation })
   const [prefecture, setPrefecture] = useState("");
   const [municipality, setMunicipality] = useState("");
   const [address, setAddress] = useState("");
+  const [name, setName] = useState("");
   const [selectedMunicipalities, setMunicipalities] = useState<any[]>([]);
   const { addLocation, error, setError } = useLocation();
   const [present] = useIonToast();
@@ -44,6 +45,7 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen, onAddLocation })
       prefecture,
       municipality,
       address,
+      name,
     });
     if (data) {
       present({
@@ -86,6 +88,15 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen, onAddLocation })
             </p>
           </IonCardContent>
         </IonCard>
+        <IonItem className="input-item">
+          <IonLabel position="stacked">Location Name</IonLabel>
+          <IonInput
+            value={address}
+            onIonChange={(e) => setName(e.detail.value!)}
+            placeholder="Give a name to this location (home)"
+            required
+          />
+        </IonItem>
         <IonItem className="input-item">
           <IonSelect
             onIonChange={handlePrefectureChange}
