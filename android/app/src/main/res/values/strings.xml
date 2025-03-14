@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GridGuard</string>
+    <string name="title_activity_main">GridGuard</string>
+    <string name="package_name">com.gridguard.app</string>
+    <string name="custom_url_scheme">com.gridguard.app</string>
+</resources>

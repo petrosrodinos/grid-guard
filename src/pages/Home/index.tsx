@@ -8,14 +8,17 @@ import { useTranslation } from "react-i18next";
 import LocationOutageCard from "../../components/LocationOutageCard";
 import { Location } from "../../interfaces/location";
 import "./style.css";
+import { useNotifications } from "../../hooks/notifications";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [locations, setLocations] = useState<Location[]>([]);
   const { error, setError, getLocationsWithOutages } = useLocation();
   const { t } = useTranslation();
+  const { initPushNotifications } = useNotifications();
 
   useEffect(() => {
+    initPushNotifications();
     getOutages();
   }, []);
 

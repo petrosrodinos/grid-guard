@@ -35,17 +35,16 @@ const getUserOutages = async () => {
     const usersWithLocations = await getUsersWithLocations();
 
     const usersWithOutages = await Promise.all(usersWithLocations.map(async user => {
-        const { locations } = user;
-        const outages = await Promise.all(locations.map(async (location: any) => {
+        user.locations = await Promise.all(user.locations.map(async (location: any) => {
             const { prefecture, municipality } = location;
-            return await getLocationOutageData(prefecture, municipality);
+            location.outages = await getLocationOutageData(prefecture, municipality);
+            return location;
         }));
-
-        return { ...user, outages };
+        return user;
     }));
 
     return usersWithOutages;
-}
+};
 
 const getUsersWithLocations = async () => {
     try {
@@ -127,4 +126,6 @@ function formatData(data: DataItem[]): FormattedData[] {
 
 // getLocationOutageData("21", "413").then(data => console.log("Outage Data:", data)).catch(console.error);
 
-getUsersWithLocations().then(data => console.log("Users Data:", data)).catch(console.error);
+// getUsersWithLocations().then(data => console.log("Users Data:", data)).catch(console.error);
+
+getUserOutages().then(data => console.log("User Outages:", data)).catch(console.error);
