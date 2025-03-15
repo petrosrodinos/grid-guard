@@ -28,8 +28,9 @@ const Register = () => {
       return;
     }
     const data = await loginUser({ phone, password });
+    console.log("DATA", data);
     if (data) {
-      history.push("/");
+      history.push("/home");
     }
   };
 

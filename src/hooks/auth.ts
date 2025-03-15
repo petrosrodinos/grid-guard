@@ -147,7 +147,7 @@ export const useAuth = () => {
                 history.push("/login")
                 return;
             }
-            if (data) {
+            if (data?.session?.user) {
                 return data;
             }
         } catch (error: any) {

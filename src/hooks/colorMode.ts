@@ -4,7 +4,6 @@ export const useColorMode = () => {
     const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
-
         const savedDarkMode = JSON.parse(localStorage.getItem("darkMode") || "false");
         document.documentElement.classList.toggle("ion-palette-dark", savedDarkMode);
         setDarkMode(savedDarkMode);

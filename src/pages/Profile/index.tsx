@@ -57,25 +57,25 @@ const Profile: React.FC = () => {
       <Header title="Profile" />
       <IonContent fullscreen>
         <IonList style={{ margin: "0 auto" }}>
-          <IonItem button onClick={() => history.push("/profile/details")}>
+          <IonItem button onClick={() => history.push("/user/details")}>
             <IonIcon icon={person} slot="start" />
             <IonLabel>Profile</IonLabel>
             <IonIcon icon={chevronForwardOutline} slot="end" />
           </IonItem>
 
-          <IonItem button onClick={() => router.push("/profile/phone")}>
+          <IonItem button onClick={() => router.push("/user/phone")}>
             <IonIcon icon={call} slot="start" />
             <IonLabel>Phone Number</IonLabel>
             <IonIcon icon={chevronForwardOutline} slot="end" />
           </IonItem>
 
-          <IonItem button onClick={() => history.push("/profile/password")}>
+          <IonItem button onClick={() => history.push("/user/password")}>
             <IonIcon icon={lockClosed} slot="start" />
             <IonLabel>Password</IonLabel>
             <IonIcon icon={chevronForwardOutline} slot="end" />
           </IonItem>
 
-          <IonItem button onClick={() => history.push("/profile/notifications")}>
+          <IonItem button onClick={() => history.push("/user/notifications")}>
             <IonIcon icon={notifications} slot="start" />
             <IonLabel>Notifications</IonLabel>
             <IonIcon icon={chevronForwardOutline} slot="end" />

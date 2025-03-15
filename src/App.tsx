@@ -12,7 +12,6 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { homeOutline, informationCircleOutline, personOutline } from "ionicons/icons";
 import Home from "./pages/Home";
-import Tab2 from "./pages/Tab2";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -52,55 +51,61 @@ import Details from "./pages/Profile/Details";
 import Phone from "./pages/Profile/Phone";
 import Password from "./pages/Profile/Password";
 import Notifications from "./pages/Profile/Notifications";
-import { useEffect } from "react";
+import { useAuth } from "./hooks/auth";
+import { useColorMode } from "./hooks/colorMode";
+import { useEffect, useState } from "react";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  useEffect(() => {
-    const savedDarkMode = JSON.parse(localStorage.getItem("darkMode") || "false");
-    document.documentElement.classList.toggle("ion-palette-dark", savedDarkMode);
-  }, []);
+  useColorMode();
 
   return (
     <IonApp>
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
+            {/* {isLoggedIn && (
+              <>
+                <Route exact path="/home" component={Home} />
+                <Route exact path="/profile" component={Profile} />
+                <Route exact path="/user/details" component={Details} />
+                <Route exact path="/user/phone" component={Phone} />
+                <Route exact path="/user/password" component={Password} />
+                <Route exact path="/user/notifications" component={Notifications} />
+              </>
+            )} */}
+
             <Route exact path="/home" component={Home} />
-            <Route exact path="/tab2" component={Tab2} />
             <Route exact path="/profile" component={Profile} />
+            <Route exact path="/user/details" component={Details} />
+            <Route exact path="/user/phone" component={Phone} />
+            <Route exact path="/user/password" component={Password} />
+            <Route exact path="/user/notifications" component={Notifications} />
 
-            {/* Profile Sub-Pages */}
-            <Route exact path="/profile/details" component={Details} />
-            <Route exact path="/profile/phone" component={Phone} />
-            <Route exact path="/profile/password" component={Password} />
-            <Route exact path="/profile/notifications" component={Notifications} />
-
-            {/* Authentication Routes */}
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/validate-phone" component={ValidatePhone} />
-
-            <Redirect exact from="/" to="/home" />
+            {/* {!isLoggedIn && ( */}
+            <>
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/validate-phone" component={ValidatePhone} />
+            </>
+            {/* )} */}
+            <Redirect exact from="/" to={isLoggedIn ? "/" : "/home"} />
           </IonRouterOutlet>
 
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="home" href="/home">
-              <IonIcon icon={homeOutline} />
-              <IonLabel>Home</IonLabel>
-            </IonTabButton>
+          {isLoggedIn && (
+            <IonTabBar slot="bottom">
+              <IonTabButton tab="home" href="/home">
+                <IonIcon icon={homeOutline} />
+                <IonLabel>Home</IonLabel>
+              </IonTabButton>
 
-            <IonTabButton tab="info" href="/tab2">
-              <IonIcon icon={informationCircleOutline} />
-              <IonLabel>Info</IonLabel>
-            </IonTabButton>
-
-            <IonTabButton tab="profile" href="/profile">
-              <IonIcon icon={personOutline} />
-              <IonLabel>Profile</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
+              <IonTabButton tab="profile" href="/profile">
+                <IonIcon icon={personOutline} />
+                <IonLabel>Profile</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          )}
         </IonTabs>
       </IonReactRouter>
     </IonApp>

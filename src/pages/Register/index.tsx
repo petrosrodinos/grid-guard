@@ -31,7 +31,7 @@ const Register = () => {
     const data = await registerUser({ phone, password, fullName });
     if (data) {
       // history.push("/validate-phone?phone=" + phone);
-      history.replace("/");
+      history.replace("/home");
     }
   };
 
