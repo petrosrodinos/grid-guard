@@ -62,28 +62,33 @@ export const useUser = () => {
         }
     }
 
-    const updateUser = async (data: any) => {
+    const updateUser = async (data: any, params: { loading?: boolean } = { loading: true }) => {
         try {
-            present({
-                message: "Updating",
-            })
+            if (params.loading) {
+                present({
+                    message: "Updating",
+                })
+            }
 
             const session = await getUserSession()
 
-
             const { error } = await supabase.from("users").update(data).eq("user_id", session?.session?.user.id)
             if (error) {
+                console.log("ERROR", error)
                 setError(error.message)
                 return
             }
-            presentToast({
-                message: "Location Deleted successfully",
-                duration: 1500,
-                position: "top",
-                cssClass: "toast-success",
-            });
+            if (params.loading) {
+                presentToast({
+                    message: "Data updated successfully",
+                    duration: 1500,
+                    position: "top",
+                    cssClass: "toast-success",
+                });
+            }
 
         } catch (error: any) {
+            console.log("ERROR", error)
             setError(error.message)
 
         }

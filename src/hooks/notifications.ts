@@ -1,10 +1,15 @@
 import { Capacitor } from "@capacitor/core";
 import { PushNotifications } from "@capacitor/push-notifications";
+import { useUser } from "./user";
+import { useHistory } from "react-router-dom";
+
 export const useNotifications = () => {
+    const { updateUser } = useUser();
+    const history = useHistory();
 
     const initPushNotifications = async () => {
         if (Capacitor.getPlatform() !== 'web') {
-            await registerNotifications();
+            registerNotifications();
             addListeners();
         }
     }
@@ -12,6 +17,7 @@ export const useNotifications = () => {
     const addListeners = async () => {
         await PushNotifications.addListener('registration', token => {
             console.info('Registration token: ', token.value);
+            updateUser({ pushNotificationsToken: token.value }, { loading: false });
         });
 
         await PushNotifications.addListener('registrationError', err => {
@@ -24,6 +30,7 @@ export const useNotifications = () => {
 
         await PushNotifications.addListener('pushNotificationActionPerformed', notification => {
             console.log('Push notification action performed', notification.actionId, notification.inputValue);
+            history.push("/home");
         });
     }
 

@@ -32,6 +32,13 @@ export const useLocation = () => {
                 return null;
             }
 
+            presentToast({
+                message: "Location added successfully",
+                duration: 1500,
+                position: "top",
+                cssClass: "toast-success",
+            });
+
             return true;
 
 
@@ -97,7 +104,6 @@ export const useLocation = () => {
             setLoading(true);
 
             const session = await getUserSession()
-
 
             const { data, error } = await supabase
                 .from('locations')

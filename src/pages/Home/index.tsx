@@ -13,7 +13,7 @@ import "./style.css";
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [locations, setLocations] = useState<Location[]>([]);
-  const { error, setError, getLocationsWithOutages } = useLocation();
+  const { getLocationsWithOutages } = useLocation();
   const { t } = useTranslation();
   const { initPushNotifications } = useNotifications();
 

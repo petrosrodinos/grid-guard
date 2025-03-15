@@ -52,10 +52,12 @@ import "./global.css";
 /* Theme variables */
 import "@ionic/react/css/palettes/dark.class.css";
 import "./theme/variables.css";
+import { useAuthStore } from "./stores/auth";
 
 setupIonicReact();
 
 const App: React.FC = () => {
+  const { isLoggedIn } = useAuthStore();
   useColorMode();
 
   return (
@@ -63,11 +65,11 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Redirect exact from="/" to="/home" />
+            <Redirect exact from="/" to={isLoggedIn ? "/home" : "/login"} />
+            {/* <Route exact path="/" component={isLoggedIn ? Home : Login} /> */}
 
             <Route exact path="/home" component={Home} />
             <Route exact path="/profile" component={Profile} />
-
             <Route exact path="/user/details" component={Details} />
             <Route exact path="/user/phone" component={Phone} />
             <Route exact path="/user/password" component={Password} />
@@ -78,17 +80,19 @@ const App: React.FC = () => {
             <Route exact path="/validate-phone" component={ValidatePhone} />
           </IonRouterOutlet>
 
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="home" href="/home">
-              <IonIcon icon={homeOutline} />
-              <IonLabel>Home</IonLabel>
-            </IonTabButton>
+          {isLoggedIn && (
+            <IonTabBar slot="bottom">
+              <IonTabButton tab="home" href="/home">
+                <IonIcon icon={homeOutline} />
+                <IonLabel>Home</IonLabel>
+              </IonTabButton>
 
-            <IonTabButton tab="profile" href="/profile">
-              <IonIcon icon={personOutline} />
-              <IonLabel>Profile</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
+              <IonTabButton tab="profile" href="/profile">
+                <IonIcon icon={personOutline} />
+                <IonLabel>Profile</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          )}
         </IonTabs>
       </IonReactRouter>
     </IonApp>
