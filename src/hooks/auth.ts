@@ -2,13 +2,14 @@ import { useState } from "react";
 import supabase from "../utils/supabase";
 import { useIonLoading } from "@ionic/react";
 import { useHistory } from "react-router-dom";
+import { useAuthStore } from "../stores/auth";
 
 export const useAuth = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [data, setData] = useState<any>(null);
     const [present, dismiss] = useIonLoading();
     const history = useHistory();
+    const { login, logout } = useAuthStore()
 
     const registerUser = async ({ phone, password, fullName }: any) => {
         try {
@@ -28,8 +29,6 @@ export const useAuth = () => {
                 },
             });
 
-            console.log(data, error);
-
             if (error) {
                 setError(error.message);
                 return;
@@ -42,7 +41,7 @@ export const useAuth = () => {
                     email: "",
                     phone: `+30${phone}`,
                 });
-                setData(data)
+                login({ isLoggedIn: true, user: data?.user })
                 return data
             }
         } catch (error: any) {
@@ -69,7 +68,7 @@ export const useAuth = () => {
             }
 
             if (data) {
-                setData(data)
+                login({ isLoggedIn: true, user: data?.user })
                 return data
             }
         } catch (error: any) {
@@ -100,7 +99,6 @@ export const useAuth = () => {
                 return
             }
             if (session) {
-                setData(session)
                 return session
             }
         } catch (error: any) {
@@ -142,8 +140,8 @@ export const useAuth = () => {
         try {
             const { data, error } = await supabase.auth.getSession();
 
-
             if (error) {
+                logOut();
                 history.push("/login")
                 return;
             }
@@ -152,6 +150,7 @@ export const useAuth = () => {
             }
         } catch (error: any) {
             setError(error.message);
+            logOut();
             history.push("/login")
         }
     }
@@ -161,10 +160,11 @@ export const useAuth = () => {
             const { error } = await supabase.auth.signOut();
             if (error) {
                 setError(error.message);
-                return;
             }
-            history.push("/login");
+            logout();
+            history.replace("/login");
         } catch (error: any) {
+            logout();
             setError(error.message);
         }
     }
@@ -174,5 +174,5 @@ export const useAuth = () => {
 
 
 
-    return { registerUser, loginUser, logOut, error, loading, data, setError, verifyOtp, resendOtp, getUserSession }
+    return { registerUser, loginUser, logOut, error, loading, setError, verifyOtp, resendOtp, getUserSession }
 }

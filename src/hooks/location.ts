@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import supabase from "../utils/supabase"
 import { useIonLoading, useIonToast } from "@ionic/react"
-import { useUser } from "./user"
 import { useAuth } from "./auth"
 
 export const useLocation = () => {
@@ -11,7 +10,6 @@ export const useLocation = () => {
     const [present, dismiss] = useIonLoading();
     const [presentToast] = useIonToast();
     const [loading, setLoading] = useState<boolean>(false);
-
 
     const addLocation = async ({
         prefecture,

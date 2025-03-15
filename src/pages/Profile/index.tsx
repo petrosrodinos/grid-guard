@@ -1,9 +1,6 @@
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
   IonList,
   IonItem,
   IonLabel,
@@ -15,7 +12,7 @@ import {
 } from "@ionic/react";
 import {
   moon,
-  logOut,
+  logOut as logOutIcon,
   globe,
   person,
   call,
@@ -25,12 +22,12 @@ import {
 } from "ionicons/icons";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import supabase from "../../utils/supabase";
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "../../hooks/colorMode";
 import { useIonRouter } from "@ionic/react";
-import "./style.css";
 import Header from "../../components/Header";
+import { useAuth } from "../../hooks/auth";
+import "./style.css";
 
 const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -38,19 +35,7 @@ const Profile: React.FC = () => {
   const { i18n } = useTranslation();
   const { darkMode, toggleColorMode } = useColorMode();
   const router = useIonRouter();
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    history.push("/login");
-  };
-
-  const handleChangeLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-  };
+  const { logOut } = useAuth();
 
   return (
     <IonPage>
@@ -93,7 +78,7 @@ const Profile: React.FC = () => {
             <IonSelect
               value={i18n.language || "en"}
               placeholder="Select Language"
-              onIonChange={(e) => handleChangeLanguage(e.detail.value)}
+              onIonChange={(e) => i18n.changeLanguage(e.detail.value)}
               slot="end"
             >
               <IonSelectOption value="en">English</IonSelectOption>
@@ -101,8 +86,8 @@ const Profile: React.FC = () => {
             </IonSelect>
           </IonItem>
 
-          <IonItem button onClick={handleLogout}>
-            <IonIcon icon={logOut} slot="start" />
+          <IonItem button onClick={logOut}>
+            <IonIcon icon={logOutIcon} slot="start" />
             <IonLabel>Log Out</IonLabel>
           </IonItem>
         </IonList>

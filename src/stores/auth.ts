@@ -4,12 +4,17 @@ import { devtools, persist } from "zustand/middleware";
 interface UserStore {
     isLoggedIn: boolean;
     user: any;
+    login(user: any): void;
+    logout(): void;
 }
 
 const initialValues: UserStore = {
     isLoggedIn: false,
-    user: null
+    user: null,
+    login: () => { },
+    logout: () => { },
 };
+
 
 const STORE_KEY = "auth";
 

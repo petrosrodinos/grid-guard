@@ -7,8 +7,8 @@ import { useLocation } from "../../hooks/location";
 import { useTranslation } from "react-i18next";
 import LocationOutageCard from "../../components/LocationOutageCard";
 import { Location } from "../../interfaces/location";
-import "./style.css";
 import { useNotifications } from "../../hooks/notifications";
+import "./style.css";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
