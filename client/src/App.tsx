@@ -22,6 +22,7 @@ import Password from "./pages/Profile/Password";
 import Notifications from "./pages/Profile/Notifications";
 import { useColorMode } from "./hooks/colorMode";
 
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
