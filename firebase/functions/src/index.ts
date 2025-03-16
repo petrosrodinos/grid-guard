@@ -1,21 +1,17 @@
-
 import { onRequest } from "firebase-functions/v2/https";
-// import puppeteer from "puppeteer";
+import puppeteer from "puppeteer";
 import { createClient } from "@supabase/supabase-js";
 import admin from "firebase-admin";
-// import fs from "fs";
 
 
-
-
-// type DataItem = [
-//     string, // from
-//     string, // to
-//     string, // area
-//     string, // areaDescription
-//     string, // number
-//     string  // reason
-// ];
+type DataItem = [
+    string, // from
+    string, // to
+    string, // area
+    string, // areaDescription
+    string, // number
+    string  // reason
+];
 
 interface FormattedData {
     from: DateTime;
@@ -50,36 +46,35 @@ interface Location {
     outages: FormattedData[];
 }
 
-// const OUTAGES_LINK = "https://siteapps.deddie.gr/outages2public";
+const OUTAGES_LINK = "https://siteapps.deddie.gr/outages2public";
 
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dnVkcGF0aG11bnlkaGh2dHloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1MzQzNzAsImV4cCI6MjA1NzExMDM3MH0.qVcfH7_hiiYP9S6AOuzbsnC72ud7njNmfBnpek89pvg"
 const SUPABASE_URL = "https://euvudpathmunydhhvtyh.supabase.co"
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-// const serviceAccount = JSON.parse(fs.readFileSync("./serviceAccountKey.json", "utf8"));
-
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-// });
-
 
 admin.initializeApp();
 
-const messaging = admin.messaging();
+// const messaging = admin.messaging();
 
-export const getOutages = onRequest(async (request, response) => {
+let browser: any;
+let page: any;
+
+export const getOutages = onRequest({ timeoutSeconds: 120 }, async (request, response) => {
 
     const userId = request.query.userId as string;
 
     const usersWithLocations: User[] = await getUsersWithLocations(userId);
 
-    const user = usersWithLocations[0];
+    await initBrowser();
 
-    sendPushNotification({
-        title: "Προγραμματισμένη διακοπή ρεύματος",
-        body: "Θα υπάρξει διακοπή ρεύματος από 10:00 έως 12:00 στην περιοχή σας",
-        token: user.pushNotificationsToken
-    });
+    // const user = usersWithLocations[0];
+
+    // sendPushNotification({
+    //     title: "Προγραμματισμένη διακοπή ρεύματος",
+    //     body: "Θα υπάρξει διακοπή ρεύματος από 10:00 έως 12:00 στην περιοχή σας",
+    //     token: user.pushNotificationsToken
+    // });
 
     try {
         const usersWithOutages = await getUserOutages(usersWithLocations);
@@ -90,19 +85,13 @@ export const getOutages = onRequest(async (request, response) => {
             .send({ error: error.message });
     }
 
-
 });
 
-
-
 const getUserOutages = async (users: User[]) => {
-
-
     const usersWithOutages = await Promise.all(users.map(async (user: User) => {
         user.locations = await Promise.all(user.locations.map(async (location: Location) => {
-            // const { prefecture, municipality } = location;
-            // location.outages = await getLocationOutageData(prefecture, municipality);
-            location.outages = [];
+            const { prefecture, municipality } = location;
+            location.outages = await getLocationOutageData(prefecture, municipality);
             return location;
         }));
         return user;
@@ -141,84 +130,97 @@ const getUsersWithLocations = async (userId?: string): Promise<User[]> => {
 }
 
 
-// const getLocationOutageData = async (prefecture: string, municipality: string) => {
-//     try {
-//         // const browser = await puppeteer.launch({ headless: true });
-//         const browser = await puppeteer.launch({
-//             executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-//             headless: true
-//         });
-//         const page = await browser.newPage();
-//         await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
+const getLocationOutageData = async (prefecture: string, municipality: string) => {
+    try {
 
-//         await page.select("#PrefectureID", prefecture);
-//         // await page.waitForTimeout(1000);
+        await page.waitForSelector("#PrefectureID", { timeout: 3000 });
+        await page.select("#PrefectureID", prefecture);
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-//         await page.select("#MunicipalityID", municipality);
-//         // await page.waitForTimeout(2000);
+        await page.waitForSelector("#MunicipalityID", { timeout: 3000 });
+        await page.select("#MunicipalityID", municipality);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-//         const tableData: any = await page.evaluate(() => {
-//             const table = document.querySelector("#tblOutages");
-//             if (!table) return [];
+        await page.waitForSelector("#tblOutages", { timeout: 10000 });
 
-//             const rows = Array.from(table.querySelectorAll("tbody tr"));
-//             return rows.map((row: any) => {
-//                 return Array.from(row.querySelectorAll("td")).map((td: any) => td.innerText.trim());
-//             });
-//         });
+        const tableData: any = await page.evaluate(() => {
+            const table = document.querySelector("#tblOutages");
+            if (!table) {
+                return [];
+            }
 
-//         await browser.close();
+            const rows = Array.from(table.querySelectorAll("tbody tr"));
+            return rows.map((row: any) => {
+                return Array.from(row.querySelectorAll("td")).map((td: any) => td.innerText.trim());
+            });
+        });
 
-//         const formattedData = formatData(tableData);
-//         return formattedData;
-//     } catch (error) {
-//         throw error;
-//     }
-// };
+        await browser.close();
 
-// function formatData(data: DataItem[]): FormattedData[] {
-//     return data.map(item => {
-//         const formatDateTime = (dateTimeString: string): DateTime => {
-//             const [date, time, period] = dateTimeString.split(" ");
-//             // const [time, period] = timeWithPeriod.split(" ");
-//             return {
-//                 date: date,
-//                 time: `${time} ${period}`,
-//             };
-//         };
+        const formattedData = formatData(tableData);
+        return formattedData;
+    } catch (error) {
+        console.error("Error in getLocationOutageData:", error);
+        throw error;
+    }
+};
 
-//         return {
-//             from: formatDateTime(item[0]),
-//             to: formatDateTime(item[1]),
-//             area: item[2],
-//             areaDescription: item[3],
-//             reason: item[5],
-//         };
-//     });
-// }
 
-const sendPushNotification = ({
-    title,
-    body,
-    token
-}: {
-    title: string,
-    body: string,
-    token: string
-}) => {
-    const message = {
-        notification: {
-            title,
-            body,
-        },
-        token,
-    };
+function formatData(data: DataItem[]): FormattedData[] {
+    return data.map(item => {
+        const formatDateTime = (dateTimeString: string): DateTime => {
+            const [date, time, period] = dateTimeString.split(" ");
+            // const [time, period] = timeWithPeriod.split(" ");
+            return {
+                date: date,
+                time: `${time} ${period}`,
+            };
+        };
 
-    messaging
-        .send(message)
-        .then((response: any) => console.log("Successfully sent message:", response))
-        .catch((error: any) => console.error("Error sending message1:", error));
+        return {
+            from: formatDateTime(item[0]),
+            to: formatDateTime(item[1]),
+            area: item[2],
+            areaDescription: item[3],
+            reason: item[5],
+        };
+    });
 }
+
+const initBrowser = async () => {
+    browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+
+    page = await browser.newPage();
+    await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
+
+    await page.content();
+}
+
+// const sendPushNotification = ({
+//     title,
+//     body,
+//     token
+// }: {
+//     title: string,
+//     body: string,
+//     token: string
+// }) => {
+//     const message = {
+//         notification: {
+//             title,
+//             body,
+//         },
+//         token,
+//     };
+
+//     messaging
+//         .send(message)
+//         .then((response: any) => console.log("Successfully sent message:", response))
+//         .catch((error: any) => console.error("Error sending message1:", error));
+// }
 
 
 
