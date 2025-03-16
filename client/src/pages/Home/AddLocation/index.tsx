@@ -37,7 +37,7 @@ const AddLocation: FC<AddLocationProps> = ({ isOpen, setIsOpen, onAddLocation })
   const [present] = useIonToast();
 
   const handleAddLocation = async () => {
-    if (!prefecture || !municipality || !address) {
+    if (!prefecture || !municipality || !address || !name) {
       setError("Please fill all the fields.");
       return;
     }

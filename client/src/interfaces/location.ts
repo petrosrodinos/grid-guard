@@ -9,8 +9,14 @@ export interface Location {
 }
 
 export interface Outage {
-    from: string,
-    to: string,
+    from: OutageDate,
+    to: OutageDate,
     area: string,
-    reason: string
+    reason: string,
+    areaDescription: string
+}
+
+export interface OutageDate {
+    date: string,
+    time: string
 }

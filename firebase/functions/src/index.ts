@@ -78,7 +78,7 @@ export const getOutages = onRequest({ timeoutSeconds: 120 }, async (request, res
 
     try {
         const usersWithOutages = await getUserOutages(usersWithLocations);
-        response.status(200).send({ usersWithOutages });
+        response.status(200).send({ data: usersWithOutages });
     } catch (error: any) {
         response
             .status(500)

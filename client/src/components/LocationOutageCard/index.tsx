@@ -33,57 +33,55 @@ const LocationOutageCard: FC<LocationCardProps> = ({ location }) => {
   }, [prefectureName]);
 
   return (
-    <div>
-      <div className="location-card">
-        <IonCardHeader>
-          <IonCardTitle>
-            {name} - {address}
-          </IonCardTitle>
-          <IonCardSubtitle className="small-grey-text">
-            {prefectureName} - {municipalityName}
-          </IonCardSubtitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonList>
-            {outages?.map((outage, idx) => (
-              <IonCard key={idx} className="outage-card">
-                <IonCardHeader>
-                  <IonCardTitle>Outage Information</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  <IonItem>
-                    <IonIcon icon={timeOutline} slot="start" />
-                    <IonLabel>
-                      <strong>From:</strong> {outage.from}
-                    </IonLabel>
-                  </IonItem>
+    <div className="location-card">
+      <IonCardHeader>
+        <IonCardTitle>
+          {name} - {address}
+        </IonCardTitle>
+        <IonCardSubtitle className="small-grey-text">
+          {prefectureName} - {municipalityName}
+        </IonCardSubtitle>
+      </IonCardHeader>
+      <IonCardContent>
+        <IonList>
+          {outages?.map((outage, idx) => (
+            <IonCard key={idx} className="outage-card">
+              <IonCardHeader>
+                <IonCardTitle>Outage Information</IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <IonItem>
+                  <IonIcon icon={timeOutline} slot="start" />
+                  <IonLabel>
+                    <strong>From:</strong> {outage.from.date} - {outage.from.time}
+                  </IonLabel>
+                </IonItem>
 
-                  <IonItem>
-                    <IonIcon icon={timeOutline} slot="start" />
-                    <IonLabel>
-                      <strong>To:</strong> {outage.to}
-                    </IonLabel>
-                  </IonItem>
+                <IonItem>
+                  <IonIcon icon={timeOutline} slot="start" />
+                  <IonLabel>
+                    <strong>To:</strong> {outage.to.date} - {outage.to.time}
+                  </IonLabel>
+                </IonItem>
 
-                  <IonItem>
-                    <IonIcon icon={locationOutline} slot="start" />
-                    <IonLabel>
-                      <strong>Area:</strong> {outage.area}
-                    </IonLabel>
-                  </IonItem>
+                <IonItem>
+                  <IonIcon icon={locationOutline} slot="start" />
+                  <IonLabel>
+                    <strong>Area:</strong> {outage.areaDescription}
+                  </IonLabel>
+                </IonItem>
 
-                  <IonItem>
-                    <IonIcon icon={alertCircleOutline} slot="start" />
-                    <IonLabel>
-                      <strong>Reason:</strong> {outage.reason}
-                    </IonLabel>
-                  </IonItem>
-                </IonCardContent>
-              </IonCard>
-            ))}
-          </IonList>
-        </IonCardContent>
-      </div>
+                <IonItem>
+                  <IonIcon icon={alertCircleOutline} slot="start" />
+                  <IonLabel>
+                    <strong>Reason:</strong> {outage.reason}
+                  </IonLabel>
+                </IonItem>
+              </IonCardContent>
+            </IonCard>
+          ))}
+        </IonList>
+      </IonCardContent>
     </div>
   );
 };

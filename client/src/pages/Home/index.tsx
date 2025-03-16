@@ -1,31 +1,39 @@
-import { IonContent, IonPage, IonButton, IonCard, IonCardContent, IonIcon } from "@ionic/react";
+import {
+  IonContent,
+  IonPage,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonIcon,
+  IonSpinner,
+} from "@ionic/react";
 import { locationOutline } from "ionicons/icons";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import AddLocation from "./AddLocation";
-import { useLocation } from "../../hooks/location";
 import { useTranslation } from "react-i18next";
 import LocationOutageCard from "../../components/LocationOutageCard";
-import { Location } from "../../interfaces/location";
 import { useNotifications } from "../../hooks/notifications";
+import { useQuery } from "@tanstack/react-query";
+import { getUserOutages } from "../../services/location";
+import { useAuthStore } from "../../stores/auth";
 import "./style.css";
 
 const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [locations, setLocations] = useState<Location[]>([]);
-  const { getLocationsWithOutages } = useLocation();
   const { t } = useTranslation();
   const { initPushNotifications } = useNotifications();
+  const { user } = useAuthStore();
+
+  const { isLoading, error, data, refetch } = useQuery({
+    queryKey: ["outages"],
+    enabled: !!user?.id,
+    queryFn: () => getUserOutages(user?.id),
+  });
 
   useEffect(() => {
     initPushNotifications();
-    getOutages();
   }, []);
-
-  const getOutages = async () => {
-    const outages = await getLocationsWithOutages();
-    setLocations(outages);
-  };
 
   const handleAddLocation = () => {
     setIsOpen(true);
@@ -51,7 +59,7 @@ const Home: React.FC = () => {
             Add Location
           </IonButton>
 
-          {locations.length === 0 ? (
+          {data?.locations && data?.locations?.length === 0 && !isLoading ? (
             <IonCard className="info-card">
               <IonCardContent>
                 <p>
@@ -61,9 +69,16 @@ const Home: React.FC = () => {
               </IonCardContent>
             </IonCard>
           ) : (
-            locations.map((location: any, index: number) => (
+            data?.locations &&
+            data?.locations?.map((location: any, index: number) => (
               <LocationOutageCard key={index} location={location} />
             ))
+          )}
+          {isLoading && (
+            <IonSpinner
+              color="success"
+              style={{ margin: "0 auto", width: "100%", marginTop: "20px" }}
+            ></IonSpinner>
           )}
         </div>
 
@@ -71,7 +86,7 @@ const Home: React.FC = () => {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           onAddLocation={() => {
-            getLocationsWithOutages();
+            refetch();
             setIsOpen(false);
           }}
         />
