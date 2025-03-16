@@ -8,6 +8,8 @@ import {
   IonItem,
   IonIcon,
   IonLabel,
+  IonAccordion,
+  IonAccordionGroup,
 } from "@ionic/react";
 import { timeOutline, locationOutline, alertCircleOutline } from "ionicons/icons";
 import { FC, useMemo } from "react";
@@ -43,44 +45,40 @@ const LocationOutageCard: FC<LocationCardProps> = ({ location }) => {
         </IonCardSubtitle>
       </IonCardHeader>
       <IonCardContent>
-        <IonList>
+        <IonAccordionGroup>
           {outages?.map((outage, idx) => (
-            <IonCard key={idx} className="outage-card">
-              <IonCardHeader>
-                <IonCardTitle>Outage Information</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <IonItem>
-                  <IonIcon icon={timeOutline} slot="start" />
-                  <IonLabel>
-                    <strong>From:</strong> {outage.from.date} - {outage.from.time}
-                  </IonLabel>
-                </IonItem>
+            <IonAccordion key={idx} value={`outage-${idx}`}>
+              <IonItem slot="header">
+                <IonIcon icon={alertCircleOutline} slot="start" />
+                <IonLabel>Outage #{idx + 1}</IonLabel>
+              </IonItem>
+              <div className="ion-padding" slot="content">
+                <IonList>
+                  <IonItem>
+                    <IonIcon icon={timeOutline} slot="start" />
+                    <IonLabel>
+                      <strong>From:</strong> {outage.from.date} - {outage.from.time}
+                    </IonLabel>
+                  </IonItem>
 
-                <IonItem>
-                  <IonIcon icon={timeOutline} slot="start" />
-                  <IonLabel>
-                    <strong>To:</strong> {outage.to.date} - {outage.to.time}
-                  </IonLabel>
-                </IonItem>
+                  <IonItem>
+                    <IonIcon icon={timeOutline} slot="start" />
+                    <IonLabel>
+                      <strong>To:</strong> {outage.to.date} - {outage.to.time}
+                    </IonLabel>
+                  </IonItem>
 
-                <IonItem>
-                  <IonIcon icon={locationOutline} slot="start" />
-                  <IonLabel>
-                    <strong>Area:</strong> {outage.areaDescription}
-                  </IonLabel>
-                </IonItem>
-
-                <IonItem>
-                  <IonIcon icon={alertCircleOutline} slot="start" />
-                  <IonLabel>
-                    <strong>Reason:</strong> {outage.reason}
-                  </IonLabel>
-                </IonItem>
-              </IonCardContent>
-            </IonCard>
+                  <IonItem>
+                    <IonIcon icon={locationOutline} slot="start" />
+                    <IonLabel>
+                      <strong>Area:</strong> {outage.areaDescription}
+                    </IonLabel>
+                  </IonItem>
+                </IonList>
+              </div>
+            </IonAccordion>
           ))}
-        </IonList>
+        </IonAccordionGroup>
       </IonCardContent>
     </div>
   );
