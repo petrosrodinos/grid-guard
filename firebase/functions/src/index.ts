@@ -55,29 +55,26 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 admin.initializeApp();
 
-// const messaging = admin.messaging();
+const messaging = admin.messaging();
 
 let browser: any;
 let page: any;
 
 export const getOutages = onRequest({ timeoutSeconds: 120 }, async (request, response) => {
 
-    const userId = request.query.userId as string;
-
-    const usersWithLocations: User[] = await getUsersWithLocations(userId);
-
-    await initBrowser();
-
-    // const user = usersWithLocations[0];
-
-    // sendPushNotification({
-    //     title: "Προγραμματισμένη διακοπή ρεύματος",
-    //     body: "Θα υπάρξει διακοπή ρεύματος από 10:00 έως 12:00 στην περιοχή σας",
-    //     token: user.pushNotificationsToken
-    // });
-
     try {
+        const userId = request.query.userId as string;
+
+        const usersWithLocations: User[] = await getUsersWithLocations(userId);
+
+        await initBrowser();
+
         const usersWithOutages = await getUserOutages(usersWithLocations);
+
+        if (!userId) {
+            await sendNotifications(usersWithOutages);
+        }
+
         response.status(200).send({ data: usersWithOutages });
     } catch (error: any) {
         response
@@ -96,6 +93,7 @@ const getUserOutages = async (users: User[]) => {
         }));
         return user;
     }));
+    await browser.close();
 
     return usersWithOutages;
 };
@@ -155,7 +153,6 @@ const getLocationOutageData = async (prefecture: string, municipality: string) =
             });
         });
 
-        await browser.close();
 
         const formattedData = formatData(tableData);
         return formattedData;
@@ -199,28 +196,45 @@ const initBrowser = async () => {
     await page.content();
 }
 
-// const sendPushNotification = ({
-//     title,
-//     body,
-//     token
-// }: {
-//     title: string,
-//     body: string,
-//     token: string
-// }) => {
-//     const message = {
-//         notification: {
-//             title,
-//             body,
-//         },
-//         token,
-//     };
+const sendNotifications = async (users: User[]) => {
+    users.forEach(async (user: User) => {
+        if (user.pushNotificationsToken) {
+            user.locations.map((location: Location) => {
+                if (location.outages.length > 0) {
+                    sendPushNotification({
+                        title: "Διακοπή ρεύματος",
+                        body: `Διακοπή ρεύματος στην διεύθυνση ${location.name} πατήστε για περισσότερες πληροφορίες`,
+                        token: user.pushNotificationsToken
+                    });
+                }
+            }
+            );
+        }
+    });
+}
 
-//     messaging
-//         .send(message)
-//         .then((response: any) => console.log("Successfully sent message:", response))
-//         .catch((error: any) => console.error("Error sending message1:", error));
-// }
+const sendPushNotification = ({
+    title,
+    body,
+    token
+}: {
+    title: string,
+    body: string,
+    token: string
+}) => {
+    const message = {
+        notification: {
+            title,
+            body,
+        },
+        token,
+    };
+
+    messaging
+        .send(message)
+        .then((response: any) => console.log("Successfully sent message:", response))
+        .catch((error: any) => console.error("Error sending message1:", error));
+}
 
 
 
