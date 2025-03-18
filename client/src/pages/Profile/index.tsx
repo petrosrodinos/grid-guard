@@ -60,11 +60,11 @@ const Profile: React.FC = () => {
             <IonIcon icon={chevronForwardOutline} slot="end" />
           </IonItem>
 
-          <IonItem button onClick={() => history.push("/user/notifications")}>
+          {/* <IonItem button onClick={() => history.push("/user/notifications")}>
             <IonIcon icon={notifications} slot="start" />
             <IonLabel>Notifications</IonLabel>
             <IonIcon icon={chevronForwardOutline} slot="end" />
-          </IonItem>
+          </IonItem> */}
 
           <IonItem>
             <IonIcon icon={moon} slot="start" />
