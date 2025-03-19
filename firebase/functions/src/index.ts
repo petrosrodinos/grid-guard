@@ -187,14 +187,13 @@ function formatData(data: DataItem[]): FormattedData[] {
 const initBrowser = async () => {
     browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: '/opt/google/chrome/chrome'
     });
 
     page = await browser.newPage();
     await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
-
-    await page.content();
-}
+};
 
 const sendNotifications = async (users: User[]) => {
     users.forEach(async (user: User) => {
