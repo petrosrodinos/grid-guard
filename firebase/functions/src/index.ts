@@ -3,7 +3,6 @@ import puppeteer from "puppeteer";
 import { createClient } from "@supabase/supabase-js";
 import admin from "firebase-admin";
 
-
 type DataItem = [
     string, // from
     string, // to
@@ -60,7 +59,7 @@ const messaging = admin.messaging();
 let browser: any;
 let page: any;
 
-export const getOutages = onRequest({ timeoutSeconds: 120 }, async (request, response) => {
+export const getOutages = onRequest({ timeoutSeconds: 240, memory: "512MiB" }, async (request, response) => {
 
     try {
         const userId = request.query.userId as string;
@@ -188,7 +187,7 @@ const initBrowser = async () => {
     browser = await puppeteer.launch({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        executablePath: '/opt/google/chrome/chrome'
+        executablePath: '/opt/google/chrome/chrome' // Change the path
     });
 
     page = await browser.newPage();
