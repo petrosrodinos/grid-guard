@@ -32,13 +32,14 @@ app.get("/", async (req, res) => {
         await initBrowser();
         const usersWithOutages = await getUserOutages(usersWithLocations);
 
+        const todaysOutages = await getTodaysOutages(usersWithOutages);
+
         if (!userId) {
-            await sendNotifications(usersWithOutages);
+            await sendNotifications(todaysOutages);
         }
 
 
-
-        res.status(200).send({ data: usersWithOutages });
+        res.status(200).send({ data: todaysOutages });
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
@@ -71,13 +72,13 @@ const getUsersWithLocations = async (userId) => {
 
 const getLocationOutageData = async (prefecture, municipality) => {
     try {
-        await page.waitForSelector("#PrefectureID", { timeout: 3000 });
+        await page.waitForSelector("#PrefectureID", { timeout: 5000 });
         await page.select("#PrefectureID", prefecture);
         // await new Promise(resolve => setTimeout(resolve, 1000));
-        await page.waitForSelector("#MunicipalityID", { timeout: 3000 });
+        await page.waitForSelector("#MunicipalityID", { timeout: 5000 });
         await page.select("#MunicipalityID", municipality);
         // await new Promise(resolve => setTimeout(resolve, 2000));
-        await page.waitForSelector("#tblOutages", { timeout: 10000 });
+        await page.waitForSelector("#tblOutages", { timeout: 5000 });
 
         const tableData = await page.evaluate(() => {
             const table = document.querySelector("#tblOutages");
@@ -119,15 +120,18 @@ const initBrowser = async () => {
     await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
 };
 
-// const initBrowser = async () => {
-//     browser = await puppeteer.launch({
-//         headless: true,
-//         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-//         // executablePath: '/opt/google/chrome/chrome'
-//     });
-//     page = await browser.newPage();
-//     await page.goto(OUTAGES_LINK, { waitUntil: "networkidle2" });
-// };
+const getTodaysOutages = (users) => {
+    const today = new Date().toLocaleDateString("el-GR");
+
+    return users.map(user => ({
+        ...user,
+        locations: user.locations.map(location => ({
+            ...location,
+            outages: location.outages.filter(outage => outage.from.date === today)
+        })).filter(location => location.outages.length > 0)
+    })).filter(user => user.locations.length > 0);
+};
+
 
 const sendNotifications = async (users) => {
     users.forEach(async (user) => {
