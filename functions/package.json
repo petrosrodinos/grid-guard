@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start:outages": "FUNCTION_TARGET='getOutages' npx @google-cloud/functions-framework",
+    "deploy:outages": "gcloud functions deploy 'getOutages' --trigger-http --runtime='nodejs20'"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.6",
+    "@sparticuz/chromium": "^133.0.0",
+    "@supabase/supabase-js": "^2.49.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.2.0",
+    "puppeteer": "^24.4.0",
+    "puppeteer-core": "^24.4.0"
+  }
+}

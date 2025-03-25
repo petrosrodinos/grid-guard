@@ -74,6 +74,13 @@ const Home: React.FC = () => {
               <LocationOutageCard key={index} location={location} />
             ))
           )}
+          {error && (
+            <IonCard className="info-card">
+              <IonCardContent>
+                <p>There was an error fetching the data. Please try again later.</p>
+              </IonCardContent>
+            </IonCard>
+          )}
           {isLoading && (
             <IonSpinner
               color="success"
