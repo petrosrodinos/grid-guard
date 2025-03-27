@@ -10,7 +10,7 @@ export const getUserOutages = async (userId: string) => {
             },
         });
         console.log("DATA", data.data)
-        return data.data[0];
+        return data?.data?.[0] || [];
     } catch (error) {
         console.error(error);
         return [];

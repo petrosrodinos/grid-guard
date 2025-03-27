@@ -59,12 +59,13 @@ const Home: React.FC = () => {
             Add Location
           </IonButton>
 
-          {data?.locations && data?.locations?.length === 0 && !isLoading ? (
+          {(data?.length == 0 || !data?.locations || data?.locations?.length === 0) &&
+          !isLoading ? (
             <IonCard className="info-card">
               <IonCardContent>
                 <p>
-                  There are no added locations to keep track. Please add now by pressing the button
-                  below.
+                  There are no outages in your location.Or you have not added any location. Please
+                  add a location to get notifications.
                 </p>
               </IonCardContent>
             </IonCard>
